@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -60,7 +61,9 @@ class OnboardingScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.toNamed(AppRoutes.signup);
+                          },
                           child: Text(
                             "Skip",
                             style: GoogleFonts.manrope(
@@ -71,10 +74,18 @@ class OnboardingScreen extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: AppColors.primaryColor,
-                          child: Icon(Icons.arrow_forward, color: Colors.black),
+                        InkWell(
+                          onTap: () {
+                            Get.toNamed(AppRoutes.signup);
+                          },
+                          child: CircleAvatar(
+                            radius: 25,
+                            backgroundColor: AppColors.primaryColor,
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ],
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
 
@@ -72,10 +73,15 @@ class SignupScreen extends StatelessWidget {
               child: Row(
                 children: [
                   const Spacer(),
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundColor: AppColors.primaryColor,
-                    child: Icon(Icons.arrow_forward, color: Colors.black),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(AppRoutes.phoneNumberAuthentication);
+                    },
+                    child: CircleAvatar(
+                      radius: 25,
+                      backgroundColor: AppColors.primaryColor,
+                      child: Icon(Icons.arrow_forward, color: Colors.black),
+                    ),
                   ),
                 ],
               ),

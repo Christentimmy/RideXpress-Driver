@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/modules/auth/views/phone_authentication_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/signup_screen.dart';
 import 'package:ridexpressdriver/app/modules/onboarding/views/onboarding_screen.dart';
 import 'package:ridexpressdriver/app/modules/splash/views/splash_screen.dart';
@@ -9,5 +10,9 @@ class AppPages {
     GetPage(name: AppRoutes.splash, page: () => const SplashScreen()),
     GetPage(name: AppRoutes.onboarding, page: () => const OnboardingScreen()),
     GetPage(name: AppRoutes.signup, page: () => SignupScreen()),
+    GetPage(
+      name: AppRoutes.phoneNumberAuthentication,
+      page: () => PhoneAuthenticationScreen(),
+    ),
   ];
 }
