@@ -2,7 +2,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:ridexpressdriver/app/routes/app_routes.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
 
@@ -16,7 +16,7 @@ class PhoneAuthenticationScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80)),
         onPressed: () {
-          // Get.toNamed(AppRoutes.otpVerification);
+          Get.toNamed(AppRoutes.otpScreen);
         },
         backgroundColor: AppColors.primaryColor,
         elevation: 1,
@@ -45,7 +45,6 @@ class PhoneAuthenticationScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: Get.height * 0.1),
-
             Container(
               padding: const EdgeInsets.symmetric(vertical: 3),
               decoration: BoxDecoration(

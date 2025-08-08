@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/modules/auth/views/otp_verification_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/phone_authentication_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/signup_screen.dart';
 import 'package:ridexpressdriver/app/modules/onboarding/views/onboarding_screen.dart';
+import 'package:ridexpressdriver/app/modules/profile/views/complete_profile_screen.dart';
 import 'package:ridexpressdriver/app/modules/splash/views/splash_screen.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 
@@ -13,6 +15,14 @@ class AppPages {
     GetPage(
       name: AppRoutes.phoneNumberAuthentication,
       page: () => PhoneAuthenticationScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.otpScreen,
+      page: () => OtpVerificationScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.completeProfile,
+      page: () => CompleteProfileScreen(),
     ),
   ];
 }
