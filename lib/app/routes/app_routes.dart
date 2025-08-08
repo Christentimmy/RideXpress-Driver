@@ -5,4 +5,5 @@ class AppRoutes {
   static const String phoneNumberAuthentication = '/phoneNumberAuthentication';
   static const String otpScreen = '/otpScreen';
   static const String uploadProfile = '/uploadProfile';
+  static const String selectVehicle = '/selectVehicle';
 }

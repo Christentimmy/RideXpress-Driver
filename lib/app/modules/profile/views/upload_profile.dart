@@ -51,7 +51,7 @@ class UploadProfile extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () {
-                    Get.toNamed(AppRoutes.signup);
+                    Get.toNamed(AppRoutes.selectVehicle);
                   },
                   child: Text(
                     "Skip",
@@ -65,7 +65,7 @@ class UploadProfile extends StatelessWidget {
                 const Spacer(),
                 InkWell(
                   onTap: () {
-                    Get.toNamed(AppRoutes.signup);
+                    Get.toNamed(AppRoutes.selectVehicle);
                   },
                   child: CircleAvatar(
                     radius: 25,
