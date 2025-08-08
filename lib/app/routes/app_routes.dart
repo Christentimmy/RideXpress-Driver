@@ -4,5 +4,5 @@ class AppRoutes {
   static const String signup = '/signup';
   static const String phoneNumberAuthentication = '/phoneNumberAuthentication';
   static const String otpScreen = '/otpScreen';
-  static const String completeProfile = '/completeProfile';
+  static const String uploadProfile = '/uploadProfile';
 }

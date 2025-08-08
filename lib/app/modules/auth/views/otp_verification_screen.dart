@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:ridexpressdriver/app/controller/timer_controller.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
-// import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
 class OtpVerificationScreen extends StatelessWidget {
@@ -19,7 +18,7 @@ class OtpVerificationScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80)),
         onPressed: () {
-          Get.toNamed(AppRoutes.completeProfile);
+          Get.toNamed(AppRoutes.uploadProfile);
         },
         backgroundColor: AppColors.primaryColor,
         elevation: 1,
@@ -51,7 +50,7 @@ class OtpVerificationScreen extends StatelessWidget {
             Center(
               child: Pinput(
                 onCompleted: (value) {
-                  Get.toNamed(AppRoutes.completeProfile);
+                  Get.toNamed(AppRoutes.uploadProfile);
                 },
                 defaultPinTheme: PinTheme(
                   width: 45,
