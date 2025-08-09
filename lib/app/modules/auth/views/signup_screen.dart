@@ -47,11 +47,21 @@ class SignupScreen extends StatelessWidget {
               hintText: "Email Address",
             ),
             SizedBox(height: Get.height * 0.02),
-            CustomTextField(
-              prefixIcon: Icons.lock,
-              prefixIconColor: AppColors.primaryColor,
-              controller: TextEditingController(),
-              hintText: "Enter password",
+            Obx(
+              () => CustomTextField(
+                prefixIcon: Icons.lock,
+                prefixIconColor: AppColors.primaryColor,
+                controller: TextEditingController(),
+                hintText: "Enter password",
+                isObscure: isObScure.value,
+                suffixIcon: isObScure.value
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                suffixIconcolor: AppColors.primaryColor,
+                onSuffixTap: () {
+                  isObScure.value = !isObScure.value;
+                },
+              ),
             ),
             SizedBox(height: Get.height * 0.02),
             CustomTextField(

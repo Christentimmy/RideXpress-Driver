@@ -5,7 +5,9 @@ import 'package:ridexpressdriver/app/modules/auth/views/phone_authentication_scr
 import 'package:ridexpressdriver/app/modules/auth/views/signup_screen.dart';
 import 'package:ridexpressdriver/app/modules/onboarding/views/onboarding_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/select_vehicle_screen.dart';
+import 'package:ridexpressdriver/app/modules/profile/views/submit_documents_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/upload_profile.dart';
+import 'package:ridexpressdriver/app/modules/profile/views/vehicle_details_screen.dart';
 import 'package:ridexpressdriver/app/modules/splash/views/splash_screen.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 
@@ -21,6 +23,14 @@ class AppPages {
     GetPage(
       name: AppRoutes.phoneAuthentication,
       page: () => PhoneAuthenticationScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.vehicleDetails,
+      page: () => VehicleDetailsScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.submitDocuments,
+      page: () => SubmitDocumentsScreen(),
     ),
   ];
 }

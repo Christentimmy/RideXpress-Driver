@@ -7,4 +7,6 @@ class AppRoutes {
   static const String uploadProfile = '/uploadProfile';
   static const String selectVehicle = '/selectVehicle';
   static const String phoneAuthentication = '/phoneAuthentication';
+  static const String vehicleDetails = '/vehicleDetails';
+  static const String submitDocuments = '/submitDocuments';
 }

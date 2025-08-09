@@ -15,7 +15,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'RideXpress',
-      initialRoute: AppRoutes.splash,
+      initialRoute: AppRoutes.submitDocuments,
       getPages: AppPages.pages,
       debugShowCheckedModeBanner: false,
       theme: appTheme,

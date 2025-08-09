@@ -87,7 +87,7 @@ class SelectVehicleScreen extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Get.toNamed(AppRoutes.signup);
+                        Get.toNamed(AppRoutes.vehicleDetails);
                       },
                       child: Text(
                         "Skip",
@@ -101,7 +101,7 @@ class SelectVehicleScreen extends StatelessWidget {
                     const Spacer(),
                     InkWell(
                       onTap: () {
-                        Get.toNamed(AppRoutes.signup);
+                        Get.toNamed(AppRoutes.vehicleDetails);
                       },
                       child: CircleAvatar(
                         radius: 25,
