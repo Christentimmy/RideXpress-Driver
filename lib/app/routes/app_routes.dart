@@ -15,4 +15,6 @@ class AppRoutes {
   static const String chatScreen = '/chatScreen';
   static const String rateDriverScreen = '/rateDriverScreen';
   static const String bottomNavigationWidget = '/bottomNavigationWidget';
+  static const String altMyTripsScreen = '/altMyTripsScreen';
+  static const String altTripDetailsScreen = '/altTripDetailsScreen';
 }

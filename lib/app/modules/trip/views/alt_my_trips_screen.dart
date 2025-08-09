@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
 class AltMyTripsScreen extends StatelessWidget {
@@ -127,6 +128,11 @@ class AltMyTripsScreen extends StatelessWidget {
                 status: 'DRIVER DIDN’T SHOW UP',
                 statusColor: Colors.red,
               ),
+              SizedBox(height: 10),
+              _buildTripCard(
+                status: 'DRIVER DIDN’T SHOW UP',
+                statusColor: Colors.red,
+              ),
             ],
           ),
         ),
@@ -137,7 +143,7 @@ class AltMyTripsScreen extends StatelessWidget {
   Widget _buildTripCard({required String status, required Color statusColor}) {
     return InkWell(
       onTap: () {
-        // Get.to(() => AltTripDetailsScreen());
+        Get.toNamed(AppRoutes.altTripDetailsScreen);
       },
       child: Container(
         width: double.infinity,
