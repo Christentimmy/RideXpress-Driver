@@ -9,7 +9,60 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(child: Column(children: [_buildHeader()])),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            SizedBox(height: Get.height * 0.06),
+            Padding(
+              padding: EdgeInsets.only(left: 25),
+              child: Text(
+                'Account Settings',
+                style: GoogleFonts.manrope(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildSettingItem(
+              title: 'Your Info',
+              subtitle: 'Account, Personal',
+            ),
+            _buildSettingItem(
+              title: 'Document',
+              subtitle: 'Driver’s License, Report',
+              showInfo: true,
+            ),
+            _buildSettingItem(title: 'Security', subtitle: 'Password, TouchID'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingItem({
+    required String title,
+    required String subtitle,
+    bool showInfo = false,
+  }) {
+    return ListTile(
+      leading: const Icon(Icons.person, color: Color(0xFFFFC107)),
+      title: Text(
+        title,
+        style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+      subtitle: Text(subtitle, style: GoogleFonts.manrope(color: Colors.grey)),
+      trailing: showInfo
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Icon(Icons.info, color: Color(0xFFFFC107)),
+                Icon(Icons.chevron_right),
+              ],
+            )
+          : const Icon(Icons.chevron_right),
     );
   }
 
