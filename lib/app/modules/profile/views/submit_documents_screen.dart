@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 
@@ -19,7 +20,9 @@ class SubmitDocumentsScreen extends StatelessWidget {
             _buildTile(
               title: "Driver’s License",
               icon: FontAwesomeIcons.idCard,
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(AppRoutes.documentDisclaimer);
+              },
             ),
             _buildTile(
               title: "HC - Vehicle Licence",
@@ -33,7 +36,7 @@ class SubmitDocumentsScreen extends StatelessWidget {
             ),
             _buildTile(
               title: "MOT Certificate",
-              icon: FontAwesomeIcons.car,
+              icon: FontAwesomeIcons.solidIdBadge,
               onTap: () {},
             ),
             SizedBox(height: 10),
@@ -61,7 +64,7 @@ class SubmitDocumentsScreen extends StatelessWidget {
                   ),
                 ),
                 ontap: () {
-                  // Get.toNamed(AppRoutes.submitDocuments);
+                  Get.toNamed(AppRoutes.homeScreen);
                 },
               ),
             ),
