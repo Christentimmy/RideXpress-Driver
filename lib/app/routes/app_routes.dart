@@ -19,4 +19,5 @@ class AppRoutes {
   static const String altTripDetailsScreen = '/altTripDetailsScreen';
   static const String settingsScreen = '/settingsScreen';
   static const String tripsStatsScreen = '/tripsStatsScreen';
+  static const String acceptanceScreen = '/acceptanceScreen';
 }

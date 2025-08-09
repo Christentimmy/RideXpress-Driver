@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
 class TripsStatsScreen extends StatelessWidget {
@@ -164,36 +165,41 @@ class TripsStatsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "92%",
-                            style: GoogleFonts.manrope(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(AppRoutes.acceptanceScreen);
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "92%",
+                              style: GoogleFonts.manrope(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 22,
                               color: AppColors.primaryColor,
                             ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 22,
-                            color: AppColors.primaryColor,
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "Acceptance Rate",
-                        style: GoogleFonts.manrope(
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
+                          ],
                         ),
-                      ),
-                    ],
+                        Text(
+                          "Acceptance Rate",
+                          style: GoogleFonts.manrope(
+                            fontSize: 13,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
