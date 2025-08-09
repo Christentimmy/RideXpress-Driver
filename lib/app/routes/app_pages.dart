@@ -13,6 +13,7 @@ import 'package:ridexpressdriver/app/modules/profile/views/select_vehicle_screen
 import 'package:ridexpressdriver/app/modules/profile/views/submit_documents_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/upload_profile.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/vehicle_details_screen.dart';
+import 'package:ridexpressdriver/app/modules/settings/views/settings_screen.dart';
 import 'package:ridexpressdriver/app/modules/splash/views/splash_screen.dart';
 import 'package:ridexpressdriver/app/modules/trip/views/alt_my_trips_screen.dart';
 import 'package:ridexpressdriver/app/modules/trip/views/alt_trip_details_screen.dart';
@@ -56,6 +57,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.altTripDetailsScreen,
       page: () => AltTripDetailsScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.settingsScreen,
+      page: () => SettingsScreen(),
     ),
   ];
 }

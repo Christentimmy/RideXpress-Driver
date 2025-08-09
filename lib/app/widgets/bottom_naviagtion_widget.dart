@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/modules/home/views/home_screen.dart';
+import 'package:ridexpressdriver/app/modules/settings/views/settings_screen.dart';
 import 'package:ridexpressdriver/app/modules/trip/views/alt_my_trips_screen.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
@@ -12,7 +13,7 @@ class BottomNaviagtionWidget extends StatelessWidget {
   final List<Widget> pages = [
     HomeScreen(),
     AltMyTripsScreen(),
-    Container(color: Colors.red),
+    SettingsScreen(),
   ];
 
   @override

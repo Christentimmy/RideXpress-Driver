@@ -17,4 +17,5 @@ class AppRoutes {
   static const String bottomNavigationWidget = '/bottomNavigationWidget';
   static const String altMyTripsScreen = '/altMyTripsScreen';
   static const String altTripDetailsScreen = '/altTripDetailsScreen';
+  static const String settingsScreen = '/settingsScreen';
 }
