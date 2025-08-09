@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -143,78 +144,87 @@ class SettingsScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "3,251",
-                        style: GoogleFonts.manrope(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Trips",
-                            style: GoogleFonts.manrope(
-                              fontSize: 13,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          // SizedBox(width: 3),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 18,
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(AppRoutes.tripsStatsScreen);
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "3,251",
+                          style: GoogleFonts.manrope(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                             color: AppColors.primaryColor,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "4.99",
-                            style: GoogleFonts.manrope(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Trips",
+                              style: GoogleFonts.manrope(
+                                fontSize: 13,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
                               color: AppColors.primaryColor,
                             ),
-                          ),
-                          Icon(
-                            Icons.star,
-                            size: 22,
-                            color: AppColors.primaryColor,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Ratings",
-                            style: GoogleFonts.manrope(
-                              fontSize: 13,
-                              fontWeight: FontWeight.normal,
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      // Get.toNamed(AppRoutes.allRatingsScreen);
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "4.99",
+                              style: GoogleFonts.manrope(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primaryColor,
+                              ),
                             ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 18,
-                            color: AppColors.primaryColor,
-                          ),
-                        ],
-                      ),
-                    ],
+                            Icon(
+                              Icons.star,
+                              size: 22,
+                              color: AppColors.primaryColor,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Ratings",
+                              style: GoogleFonts.manrope(
+                                fontSize: 13,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                              color: AppColors.primaryColor,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
