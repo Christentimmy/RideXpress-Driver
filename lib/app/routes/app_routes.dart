@@ -14,4 +14,5 @@ class AppRoutes {
   static const String homeScreen = '/homeScreen';
   static const String chatScreen = '/chatScreen';
   static const String rateDriverScreen = '/rateDriverScreen';
+  static const String bottomNavigationWidget = '/bottomNavigationWidget';
 }

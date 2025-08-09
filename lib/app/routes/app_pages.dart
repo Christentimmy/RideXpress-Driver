@@ -15,6 +15,7 @@ import 'package:ridexpressdriver/app/modules/profile/views/upload_profile.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/vehicle_details_screen.dart';
 import 'package:ridexpressdriver/app/modules/splash/views/splash_screen.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
+import 'package:ridexpressdriver/app/widgets/bottom_naviagtion_widget.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -42,5 +43,9 @@ class AppPages {
     GetPage(name: AppRoutes.homeScreen, page: () => HomeScreen()),
     GetPage(name: AppRoutes.chatScreen, page: () => ChatScreen()),
     GetPage(name: AppRoutes.rateDriverScreen, page: () => RateDriverScreen()),
+    GetPage(
+      name: AppRoutes.bottomNavigationWidget,
+      page: () => BottomNaviagtionWidget(),
+    ),
   ];
 }
