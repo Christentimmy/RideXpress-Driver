@@ -72,10 +72,16 @@ class SignupScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
+                  TextButton(
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.loginScreen);
+                    },
+                    child: Text("Login"),
+                  ),
                   const Spacer(),
                   InkWell(
                     onTap: () {
-                      Get.toNamed(AppRoutes.phoneNumberAuthentication);
+                      Get.toNamed(AppRoutes.phoneAuthentication);
                     },
                     child: CircleAvatar(
                       radius: 25,

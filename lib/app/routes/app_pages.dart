@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/otp_verification_screen.dart';
+import 'package:ridexpressdriver/app/modules/auth/views/login_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/phone_authentication_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/signup_screen.dart';
 import 'package:ridexpressdriver/app/modules/onboarding/views/onboarding_screen.dart';
@@ -13,12 +14,13 @@ class AppPages {
     GetPage(name: AppRoutes.splash, page: () => const SplashScreen()),
     GetPage(name: AppRoutes.onboarding, page: () => const OnboardingScreen()),
     GetPage(name: AppRoutes.signup, page: () => SignupScreen()),
-    GetPage(
-      name: AppRoutes.phoneNumberAuthentication,
-      page: () => PhoneAuthenticationScreen(),
-    ),
+    GetPage(name: AppRoutes.loginScreen, page: () => LoginScreen()),
     GetPage(name: AppRoutes.otpScreen, page: () => OtpVerificationScreen()),
     GetPage(name: AppRoutes.uploadProfile, page: () => UploadProfile()),
     GetPage(name: AppRoutes.selectVehicle, page: () => SelectVehicleScreen()),
+    GetPage(
+      name: AppRoutes.phoneAuthentication,
+      page: () => PhoneAuthenticationScreen(),
+    ),
   ];
 }

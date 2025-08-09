@@ -45,6 +45,7 @@ class PhoneAuthenticationScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: Get.height * 0.1),
+
             Container(
               padding: const EdgeInsets.symmetric(vertical: 3),
               decoration: BoxDecoration(
