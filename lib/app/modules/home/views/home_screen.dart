@@ -7,10 +7,24 @@ import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final RxBool isExpanded = false.obs;
+  final RxString tripStatus = "".obs;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 10), () {
+      tripStatus.value = "rides";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +95,30 @@ class HomeScreen extends StatelessWidget {
           // _buildRideAccepted(),
           // _buildRideArrived(),
           // _builTripStarted(),
-          _buildDestinationReached(),
+          // _buildDestinationReached(),
+          Obx(() => _buildTripStatus(tripStatus.value)),
         ],
       ),
     );
+  }
+
+  Widget _buildTripStatus(String status) {
+    switch (status) {
+      case "":
+        return _buildEmptyRide();
+      case "rides":
+        return _buildRides();
+      case "rideAccepted":
+        return _buildRideAccepted();
+      case "rideArrived":
+        return _buildRideArrived();
+      case "tripStarted":
+        return _builTripStarted();
+      case "destinationReached":
+        return _buildDestinationReached();
+      default:
+        return _buildEmptyRide();
+    }
   }
 
   Widget _buildDestinationReached() {
@@ -203,6 +237,9 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 15),
             CustomButton(
+              ontap: () {
+                tripStatus.value = "destinationReached";
+              },
               isLoading: false.obs,
               height: 45,
               borderRadius: BorderRadius.circular(10),
@@ -214,7 +251,6 @@ class HomeScreen extends StatelessWidget {
                   fontSize: 15,
                 ),
               ),
-              ontap: () {},
             ),
           ],
         ),
@@ -299,6 +335,12 @@ class HomeScreen extends StatelessWidget {
               isLoading: false.obs,
               height: 45,
               borderRadius: BorderRadius.circular(10),
+              ontap: () {
+                tripStatus.value = "tripStarted";
+                Future.delayed(Duration(seconds: 40), () {
+                  tripStatus.value = "destinationReached";
+                });
+              },
               child: Text(
                 "Start Up",
                 style: GoogleFonts.manrope(
@@ -307,7 +349,6 @@ class HomeScreen extends StatelessWidget {
                   fontSize: 15,
                 ),
               ),
-              ontap: () {},
             ),
           ],
         ),
@@ -555,7 +596,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Align buildEmptyRide() {
+  Align _buildEmptyRide() {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -755,7 +796,6 @@ class HomeScreen extends StatelessWidget {
                       : SizedBox.shrink(),
                 );
               }),
-
               SizedBox(height: 10),
               Row(
                 children: [
@@ -765,7 +805,12 @@ class HomeScreen extends StatelessWidget {
                       height: 40,
                       borderRadius: BorderRadius.circular(20),
                       bgColor: Colors.green,
-                      ontap: () {},
+                      ontap: () async {
+                        tripStatus.value = "rideAccepted";
+                        await Future.delayed(Duration(seconds: 40), () {
+                          tripStatus.value = "rideArrived";
+                        });
+                      },
                       child: Text(
                         "Accept",
                         style: GoogleFonts.manrope(
@@ -782,7 +827,9 @@ class HomeScreen extends StatelessWidget {
                       height: 40,
                       borderRadius: BorderRadius.circular(20),
                       isLoading: false.obs,
-                      ontap: () {},
+                      ontap: () {
+                        tripStatus.value = "";
+                      },
                       bgColor: Colors.red,
                       child: Text(
                         "Decline",
