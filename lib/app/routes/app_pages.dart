@@ -15,6 +15,7 @@ import 'package:ridexpressdriver/app/modules/profile/views/upload_profile.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/vehicle_details_screen.dart';
 import 'package:ridexpressdriver/app/modules/settings/views/acceptance_screen.dart';
 import 'package:ridexpressdriver/app/modules/settings/views/cancellation_rate_screen.dart';
+import 'package:ridexpressdriver/app/modules/settings/views/rating_stat_screen.dart';
 import 'package:ridexpressdriver/app/modules/settings/views/trips_stats_screen.dart';
 import 'package:ridexpressdriver/app/modules/settings/views/settings_screen.dart';
 import 'package:ridexpressdriver/app/modules/splash/views/splash_screen.dart';
@@ -64,6 +65,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.cancellationRateScreen,
       page: () => CancellationRateScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.ratingStatScreen,
+      page: () => RatingStatScreen(),
     ),
   ];
 }

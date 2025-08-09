@@ -182,7 +182,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      // Get.toNamed(AppRoutes.allRatingsScreen);
+                      Get.toNamed(AppRoutes.ratingStatScreen);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
