@@ -159,7 +159,7 @@ class TripsStatsScreen extends StatelessWidget {
                       Text(
                         "Trips",
                         style: GoogleFonts.manrope(
-                          fontSize: 13,
+                          fontSize: 11,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
@@ -194,43 +194,48 @@ class TripsStatsScreen extends StatelessWidget {
                         Text(
                           "Acceptance Rate",
                           style: GoogleFonts.manrope(
-                            fontSize: 13,
+                            fontSize: 11,
                             fontWeight: FontWeight.normal,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "2%",
-                            style: GoogleFonts.manrope(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(AppRoutes.cancellationRateScreen);
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "2%",
+                              style: GoogleFonts.manrope(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 22,
                               color: AppColors.primaryColor,
                             ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 22,
-                            color: AppColors.primaryColor,
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "Months",
-                        style: GoogleFonts.manrope(
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
+                          ],
                         ),
-                      ),
-                    ],
+                        Text(
+                          "Cancellation Rate",
+                          style: GoogleFonts.manrope(
+                            fontSize: 11,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

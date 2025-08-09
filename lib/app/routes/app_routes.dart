@@ -20,4 +20,5 @@ class AppRoutes {
   static const String settingsScreen = '/settingsScreen';
   static const String tripsStatsScreen = '/tripsStatsScreen';
   static const String acceptanceScreen = '/acceptanceScreen';
+  static const String cancellationRateScreen = '/cancellationRateScreen';
 }
