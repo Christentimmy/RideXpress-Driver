@@ -27,17 +27,32 @@ class SubmitDocumentsScreen extends StatelessWidget {
             _buildTile(
               title: "HC - Vehicle Licence",
               icon: FontAwesomeIcons.car,
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(
+                  AppRoutes.uploadDocScreen,
+                  arguments: {"title": "HC - Vehicle Licence"},
+                );
+              },
             ),
             _buildTile(
               title: "Vehicle Insurance",
               icon: FontAwesomeIcons.car,
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(
+                  AppRoutes.uploadDocScreen,
+                  arguments: {"title": "Vehicle Insurance"},
+                );
+              },
             ),
             _buildTile(
               title: "MOT Certificate",
               icon: FontAwesomeIcons.solidIdBadge,
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(
+                  AppRoutes.uploadDocScreen,
+                  arguments: {"title": "MOT Certificate"},
+                );
+              },
             ),
             SizedBox(height: 10),
             Center(
@@ -109,7 +124,7 @@ class SubmitDocumentsScreen extends StatelessWidget {
     );
   }
 
-  Container _buildHeader() {
+  Widget _buildHeader() {
     return Container(
       color: Color(0xFFFFF5DC),
       height: Get.height * 0.33,

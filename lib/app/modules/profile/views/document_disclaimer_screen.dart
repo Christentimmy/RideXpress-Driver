@@ -61,7 +61,10 @@ class DocumentDisclaimerScreen extends StatelessWidget {
             CustomButton(
               isLoading: false.obs,
               ontap: () {
-                Get.offNamed(AppRoutes.scanScreen);
+                Get.offNamed(
+                  AppRoutes.uploadDocScreen,
+                  arguments: {"title": "Driver's License"},
+                );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

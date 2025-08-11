@@ -10,7 +10,7 @@ class AppRoutes {
   static const String vehicleDetails = '/vehicleDetails';
   static const String submitDocuments = '/submitDocuments';
   static const String documentDisclaimer = '/documentDisclaimer';
-  static const String scanScreen = '/scanScreen';
+  static const String uploadDocScreen = '/uploadDocScreen';
   static const String homeScreen = '/homeScreen';
   static const String chatScreen = '/chatScreen';
   static const String rateDriverScreen = '/rateDriverScreen';
