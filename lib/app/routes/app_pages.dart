@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/modules/auth/views/change_password_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/otp_verification_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/login_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/phone_authentication_screen.dart';
@@ -75,6 +76,11 @@ class AppPages {
       name: AppRoutes.editProfileScreen,
       page: () => EditProfileScreen(),
     ),
+    GetPage(
+      name: AppRoutes.changePasswordScreen,
+      page: () => ChangePasswordScreen(),
+    ),
+
 
   ];
 }

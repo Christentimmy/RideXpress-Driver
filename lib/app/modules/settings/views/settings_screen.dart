@@ -35,12 +35,18 @@ class SettingsScreen extends StatelessWidget {
               },
 
             ),
+            // _buildSettingItem(
+            //   title: 'Document',
+            //   subtitle: 'Driver’s License, Report',
+            //   showInfo: true,
+            // ),
             _buildSettingItem(
-              title: 'Document',
-              subtitle: 'Driver’s License, Report',
-              showInfo: true,
+              title: 'Security',
+              subtitle: 'Password, TouchID',
+              onTap: () {
+                Get.toNamed(AppRoutes.changePasswordScreen);
+              },
             ),
-            _buildSettingItem(title: 'Security', subtitle: 'Password, TouchID'),
           ],
         ),
       ),
