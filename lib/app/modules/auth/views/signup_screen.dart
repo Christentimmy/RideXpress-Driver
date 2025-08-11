@@ -86,7 +86,14 @@ class SignupScreen extends StatelessWidget {
                     onPressed: () {
                       Get.toNamed(AppRoutes.loginScreen);
                     },
-                    child: Text("Login"),
+                    child: Text(
+                      "Login",
+                      style: GoogleFonts.manrope(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
                   ),
                   const Spacer(),
                   InkWell(
@@ -96,7 +103,7 @@ class SignupScreen extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 25,
                       backgroundColor: AppColors.primaryColor,
-                      child: Icon(Icons.arrow_forward, color: Colors.black),
+                      child: Icon(Icons.arrow_forward, color: Colors.white),
                     ),
                   ),
                 ],
