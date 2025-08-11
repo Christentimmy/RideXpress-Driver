@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ridexpressdriver/app/modules/home/widgets/home_widgets.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
@@ -37,59 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
               zoom: 15.0,
             ),
           ),
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(
-              top: Get.height * 0.07,
-              left: 15,
-              right: 15,
-              bottom: 15,
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: AssetImage("assets/images/ai.jpg"),
-                ),
-                Spacer(),
-                Container(
-                  width: Get.width * 0.4,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Color(0xFFADB3BC),
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 5),
-                      CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Colors.white,
-                        child: FaIcon(
-                          FontAwesomeIcons.car,
-                          color: Color(0xFFADB3BC),
-                        ),
-                      ),
-                      SizedBox(width: 19),
-                      Text(
-                        "Offline",
-                        style: GoogleFonts.manrope(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-                Spacer(),
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.white,
-                  child: FaIcon(
-                    FontAwesomeIcons.filter,
-                    color: Color(0xFFADB3BC),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildHeader(),
           // _buildEmptyRide(),
           // _buildRides(),
           // _buildRideAccepted(),
@@ -97,6 +46,34 @@ class _HomeScreenState extends State<HomeScreen> {
           // _builTripStarted(),
           // _buildDestinationReached(),
           Obx(() => _buildTripStatus(tripStatus.value)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(
+        top: Get.height * 0.07,
+        left: 15,
+        right: 15,
+        bottom: 15,
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundImage: AssetImage("assets/images/ai.jpg"),
+          ),
+          Spacer(),
+          AnimatedSwitchWidget(),
+          Spacer(),
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: Colors.white,
+            child: FaIcon(FontAwesomeIcons.filter, color: Color(0xFFADB3BC)),
+          ),
         ],
       ),
     );

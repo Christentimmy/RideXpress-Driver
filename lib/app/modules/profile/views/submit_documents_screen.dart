@@ -79,7 +79,7 @@ class SubmitDocumentsScreen extends StatelessWidget {
                   ),
                 ),
                 ontap: () {
-                  Get.toNamed(AppRoutes.homeScreen);
+                  Get.offAllNamed(AppRoutes.bottomNavigationWidget);
                 },
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
@@ -105,7 +106,9 @@ class LoginScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: CustomButton(
-              ontap: () {},
+              ontap: () {
+                Get.toNamed(AppRoutes.bottomNavigationWidget);
+              },
               isLoading: false.obs,
               child: Text(
                 "Login",
