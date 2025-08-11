@@ -22,6 +22,7 @@ class BottomNaviagtionWidget extends StatelessWidget {
       body: Obx(() => pages[currentIndex.value]),
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
+          backgroundColor: Colors.white,
           currentIndex: currentIndex.value,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: AppColors.primaryColor,
