@@ -7,6 +7,8 @@ import 'package:ridexpressdriver/app/utils/colors.dart';
 class SelectVehicleScreen extends StatelessWidget {
   SelectVehicleScreen({super.key});
 
+  final RxInt _selectedIndex = (-1).obs;
+
   final List allVehicles = [
     {"title": "Saloon", "image": "assets/images/saloon.png"},
     {"title": "5 Seats", "image": "assets/images/saloon.png"},
@@ -57,25 +59,35 @@ class SelectVehicleScreen extends StatelessWidget {
                   crossAxisSpacing: 20,
                 ),
                 itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(width: 1, color: Colors.grey.shade300),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(allVehicles[index]["image"]),
-                        SizedBox(height: 10),
-                        Text(
-                          allVehicles[index]["title"],
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.manrope(
-                            color: Color(0xFF555555),
-                            fontWeight: FontWeight.w700,
+                  return InkWell(
+                    onTap: () => _selectedIndex.value = index,
+                    child: Obx(
+                      () => Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            width: 1,
+                            color: _selectedIndex.value == index
+                                ? AppColors.primaryColor
+                                : Colors.grey.shade300,
                           ),
                         ),
-                      ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(allVehicles[index]["image"]),
+                            SizedBox(height: 10),
+                            Text(
+                              allVehicles[index]["title"],
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.manrope(
+                                color: Color(0xFF555555),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 },
