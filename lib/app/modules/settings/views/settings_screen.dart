@@ -30,6 +30,10 @@ class SettingsScreen extends StatelessWidget {
             _buildSettingItem(
               title: 'Your Info',
               subtitle: 'Account, Personal',
+              onTap: () {
+                Get.toNamed(AppRoutes.editProfileScreen);
+              },
+
             ),
             _buildSettingItem(
               title: 'Document',
@@ -47,8 +51,10 @@ class SettingsScreen extends StatelessWidget {
     required String title,
     required String subtitle,
     bool showInfo = false,
+    VoidCallback? onTap,
   }) {
     return ListTile(
+      onTap: onTap,
       leading: const Icon(Icons.person, color: Color(0xFFFFC107)),
       title: Text(
         title,

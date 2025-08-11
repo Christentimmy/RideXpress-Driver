@@ -8,6 +8,7 @@ import 'package:ridexpressdriver/app/modules/home/views/home_screen.dart';
 import 'package:ridexpressdriver/app/modules/home/views/rate_driver_screen.dart';
 import 'package:ridexpressdriver/app/modules/onboarding/views/onboarding_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/document_disclaimer_screen.dart';
+import 'package:ridexpressdriver/app/modules/profile/views/edit_profile_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/scan_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/select_vehicle_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/submit_documents_screen.dart';
@@ -70,5 +71,10 @@ class AppPages {
       name: AppRoutes.ratingStatScreen,
       page: () => RatingStatScreen(),
     ),
+    GetPage(
+      name: AppRoutes.editProfileScreen,
+      page: () => EditProfileScreen(),
+    ),
+
   ];
 }
