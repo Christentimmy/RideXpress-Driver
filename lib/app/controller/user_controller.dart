@@ -125,4 +125,38 @@ class UserController extends GetxController {
     }
   }
 
+  Future<void> uplaodDocuments({
+    required File driverLicensePath,
+    required File vehicleLicensePath,
+    required File vehicleInsurancePath,
+    required File motCertificatePath,
+  }) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.uplaodDocuments(
+        token: token,
+        driverLicensePath: driverLicensePath,
+        vehicleLicensePath: vehicleLicensePath,
+        vehicleInsurancePath: vehicleInsurancePath,
+        motCertificatePath: motCertificatePath,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      Get.offAllNamed(AppRoutes.bottomNavigationWidget);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
 }

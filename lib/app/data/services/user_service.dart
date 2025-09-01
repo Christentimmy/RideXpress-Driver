@@ -90,7 +90,7 @@ class UserService {
   Future<http.Response?> registerVehicleDetails({
     required String token,
     required DriverProfile driverProfile,
-  })async{
+  }) async {
     try {
       final response = await client
           .post(
@@ -113,4 +113,51 @@ class UserService {
     return null;
   }
 
+  Future<http.Response?> uplaodDocuments({
+    required String token,
+    required File driverLicensePath,
+    required File vehicleLicensePath,
+    required File vehicleInsurancePath,
+    required File motCertificatePath,
+  }) async {
+    try {
+      var request = http.MultipartRequest(
+        'PATCH',
+        Uri.parse('$baseUrl/user/upload-vehicle-docs'),
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer $token',
+      });
+
+      request.files.add(await http.MultipartFile.fromPath(
+        'driver_license',
+        driverLicensePath.path,
+      ));
+      request.files.add(await http.MultipartFile.fromPath(
+        'vehicle_license',
+        vehicleLicensePath.path,
+      ));
+      request.files.add(await http.MultipartFile.fromPath(
+        'vehicle_insurance',
+        vehicleInsurancePath.path,
+      ));
+      request.files.add(await http.MultipartFile.fromPath(
+        'mot_certificate',
+        motCertificatePath.path,
+      ));
+
+      final streamedResponse = await request.send().timeout(const Duration(seconds: 120));
+      final response = await http.Response.fromStream(streamedResponse);
+      
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
 }

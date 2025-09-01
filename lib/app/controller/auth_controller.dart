@@ -95,4 +95,5 @@ class AuthController extends GetxController {
       isOtpVerifyLoading.value = false;
     }
   }
+
 }

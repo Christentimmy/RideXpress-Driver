@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
+import 'package:ridexpressdriver/app/modules/profile/controller/submit_doc_controller.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 
+
+
 class SubmitDocumentsScreen extends StatelessWidget {
-  const SubmitDocumentsScreen({super.key});
+  SubmitDocumentsScreen({super.key});
+
+  final userController = Get.find<UserController>();
+  final subDocController = Get.put(SubmitDocController());
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +76,7 @@ class SubmitDocumentsScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: CustomButton(
-                isLoading: false.obs,
+                isLoading: userController.isloading,
                 child: Text(
                   "Save",
                   style: GoogleFonts.manrope(
@@ -78,8 +85,9 @@ class SubmitDocumentsScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                ontap: () {
-                  Get.offAllNamed(AppRoutes.bottomNavigationWidget);
+                ontap: () async {
+                  if (userController.isloading.value) return;
+                  await subDocController.uploadDocuments();
                 },
               ),
             ),
