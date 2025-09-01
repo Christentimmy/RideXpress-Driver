@@ -1,16 +1,19 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ridexpressdriver/app/routes/app_routes.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/utils/image_picker.dart';
+import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
 
 class UploadProfile extends StatelessWidget {
   UploadProfile({super.key});
 
   final selectedFile = Rx<File?>(null);
+  final userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
@@ -54,28 +57,39 @@ class UploadProfile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                TextButton(
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.selectVehicle);
-                  },
-                  child: Text(
-                    "Skip",
-                    style: GoogleFonts.manrope(
-                      color: AppColors.primaryColor,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ),
+                // TextButton(
+                //   onPressed: () {
+                //     Get.toNamed(AppRoutes.selectVehicle);
+                //   },
+                //   child: Text(
+                //     "Skip",
+                //     style: GoogleFonts.manrope(
+                //       color: AppColors.primaryColor,
+                //       fontSize: 15,
+                //       fontWeight: FontWeight.w300,
+                //     ),
+                //   ),
+                // ),
                 const Spacer(),
                 InkWell(
-                  onTap: () {
-                    Get.toNamed(AppRoutes.selectVehicle);
+                  onTap: () async {
+                    if (selectedFile.value == null) {
+                      CustomSnackbar.showErrorToast("Please select an image");
+                      return;
+                    }
+                    if (userController.isloading.value) return;
+                    await userController.uploadProfilePicture(
+                      imageFile: selectedFile.value!,
+                    );
                   },
                   child: CircleAvatar(
                     radius: 25,
                     backgroundColor: AppColors.primaryColor,
-                    child: Icon(Icons.arrow_forward, color: Colors.white),
+                    child: Obx(
+                      () => userController.isloading.value
+                          ? const CupertinoActivityIndicator(color: Colors.white)
+                          : Icon(Icons.arrow_forward, color: Colors.white),
+                    ),
                   ),
                 ),
               ],

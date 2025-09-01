@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
@@ -8,6 +10,9 @@ class SelectVehicleScreen extends StatelessWidget {
   SelectVehicleScreen({super.key});
 
   final RxInt _selectedIndex = (-1).obs;
+  final RxBool _isWheelChair = false.obs;
+
+  final userController = Get.find<UserController>();
 
   final List allVehicles = [
     {"title": "Saloon", "image": "assets/images/saloon.png"},
@@ -60,14 +65,24 @@ class SelectVehicleScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   return InkWell(
-                    onTap: () => _selectedIndex.value = index,
+                    onTap: index == 5
+                        ? () {
+                            _isWheelChair.value = !_isWheelChair.value;
+                          }
+                        : () {
+                            _selectedIndex.value = index;
+                          },
                     child: Obx(
                       () => Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(
                             width: 1,
-                            color: _selectedIndex.value == index
+                            color: index == 5
+                                ? _isWheelChair.value
+                                      ? AppColors.primaryColor
+                                      : Colors.grey.shade300
+                                : _selectedIndex.value == index
                                 ? AppColors.primaryColor
                                 : Colors.grey.shade300,
                           ),
@@ -97,28 +112,45 @@ class SelectVehicleScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   children: [
-                    TextButton(
-                      onPressed: () {
-                        Get.toNamed(AppRoutes.vehicleDetails);
-                      },
-                      child: Text(
-                        "Skip",
-                        style: GoogleFonts.manrope(
-                          color: AppColors.primaryColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ),
+                    // TextButton(
+                    //   onPressed: () {
+                    //     Get.toNamed(AppRoutes.vehicleDetails);
+                    //   },
+                    //   child: Text(
+                    //     "Skip",
+                    //     style: GoogleFonts.manrope(
+                    //       color: AppColors.primaryColor,
+                    //       fontSize: 15,
+                    //       fontWeight: FontWeight.w300,
+                    //     ),
+                    //   ),
+                    // ),
                     const Spacer(),
                     InkWell(
                       onTap: () {
                         Get.toNamed(AppRoutes.vehicleDetails);
                       },
-                      child: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: AppColors.primaryColor,
-                        child: Icon(Icons.arrow_forward, color: Colors.white),
+                      child: InkWell(
+                        onTap: () async {
+                          await userController.registerCarType(
+                            wheelChairAccessible: _isWheelChair.value,
+                            seats: _selectedIndex.value + 4,
+                          );
+                        },
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: AppColors.primaryColor,
+                          child: Obx(
+                            () => userController.isloading.value
+                                ? const CupertinoActivityIndicator(
+                                    color: Colors.white,
+                                  )
+                                : Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                  ),
+                          ),
+                        ),
                       ),
                     ),
                   ],

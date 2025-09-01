@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/data/services/user_service.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
+import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
 
 class UserController extends GetxController {
   final isloading = false.obs;
@@ -31,6 +34,62 @@ class UserController extends GetxController {
       if (user == null) return;
       final mappedUser = UserModel.fromJson(user);
       userModel.value = mappedUser;
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> uploadProfilePicture({required File imageFile}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.uploadProfilePicture(
+        token: token,
+        imageFile: imageFile,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      Get.toNamed(AppRoutes.selectVehicle);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> registerCarType({
+    required bool wheelChairAccessible,
+    required int seats,
+  }) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.registerCarType(
+        token: token,
+        wheelChairAccessible: wheelChairAccessible,
+        seats: seats,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      Get.toNamed(AppRoutes.vehicleDetails);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
