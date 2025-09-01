@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/utils/base_url.dart';
 
 class UserService {
@@ -85,4 +86,31 @@ class UserService {
     }
     return null;
   }
+
+  Future<http.Response?> registerVehicleDetails({
+    required String token,
+    required DriverProfile driverProfile,
+  })async{
+    try {
+      final response = await client
+          .post(
+            Uri.parse("$baseUrl/user/register-vehicle"),
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "application/json",
+            },
+            body: jsonEncode(driverProfile.toJson()),
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
 }

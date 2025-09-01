@@ -95,6 +95,7 @@ class UserModel {
 
 class DriverProfile {
   final int? carSeat;
+  final String? vehicleRegNumber;
   final String? carColor;
   final String? carModel;
   final String? carPlate;
@@ -122,6 +123,7 @@ class DriverProfile {
     this.allTrips,
     this.carColor,
     this.vehicleYear,
+    this.vehicleRegNumber,
   });
 
   factory DriverProfile.fromJson(json) {
@@ -142,6 +144,30 @@ class DriverProfile {
       carColor: json["carColor"] ?? "",
       vehicleYear: json["vehicleYear"] ?? "",
     );
+  }
+
+  Map<String, dynamic> toJson(){
+    Map<String, dynamic> data = {};
+    if(carSeat != null){
+      data["seat"] = carSeat;
+    }
+    if (vehicleRegNumber != null && vehicleRegNumber!.isNotEmpty) {
+      data["vehicleRegNumber"] = vehicleRegNumber;
+    }
+    if (carColor != null && carColor!.isNotEmpty) {
+      data["carColor"] = carColor;
+    }
+    if (carModel != null && carModel!.isNotEmpty) {
+      data["vehicleModel"] = carModel;
+    }
+    if (carPlate != null && carPlate!.isNotEmpty) {
+      data["licensePlate"] = carPlate;
+    }
+    if (vehicleYear != null && vehicleYear!.isNotEmpty) {
+      data["vehicleYear"] = vehicleYear;
+    }
+    
+    return data;
   }
 }
 

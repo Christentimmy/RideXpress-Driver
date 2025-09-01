@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ridexpressdriver/app/routes/app_routes.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
+import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
 
 class VehicleDetailsScreen extends StatelessWidget {
-  const VehicleDetailsScreen({super.key});
+  VehicleDetailsScreen({super.key});
+
+  final formKey = GlobalKey<FormState>();
+  final userController = Get.find<UserController>();
+  final vehicleRegistrationNumberController = TextEditingController();
+  final vehiclePlateNumberController = TextEditingController();
+  final vehicleColorController = TextEditingController();
+  // final vehicleMakeController = TextEditingController();
+  final vehicleModelController = TextEditingController();
+  final vehicleYearController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,42 +36,43 @@ class VehicleDetailsScreen extends StatelessWidget {
 
   Form _buildFormFields() {
     return Form(
+      key: formKey,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
             CustomTextField(
-              controller: TextEditingController(),
+              controller: vehicleRegistrationNumberController,
               hintText: "Vehicle Registration Number",
             ),
             SizedBox(height: Get.height * 0.02),
             CustomTextField(
-              controller: TextEditingController(),
+              controller: vehicleColorController,
               hintText: "Vehicle Color",
             ),
+            // SizedBox(height: Get.height * 0.02),
+            // CustomTextField(
+            //   controller: vehicleMakeController,
+            //   hintText: "Enter Vehicle Make",
+            // ),
             SizedBox(height: Get.height * 0.02),
             CustomTextField(
-              controller: TextEditingController(),
-              hintText: "Enter Vehicle Make",
-            ),
-            SizedBox(height: Get.height * 0.02),
-            CustomTextField(
-              controller: TextEditingController(),
+              controller: vehicleModelController,
               hintText: "Enter Vehicle Model",
             ),
             SizedBox(height: Get.height * 0.02),
             CustomTextField(
-              controller: TextEditingController(),
+              controller: vehiclePlateNumberController,
               hintText: "Licensed Plate Number",
             ),
             SizedBox(height: Get.height * 0.02),
             CustomTextField(
-              controller: TextEditingController(),
+              controller: vehicleYearController,
               hintText: "Enter Vehicle Year",
             ),
             SizedBox(height: Get.height * 0.03),
             CustomButton(
-              isLoading: false.obs,
+              isLoading: userController.isloading,
               child: Text(
                 "Save",
                 style: GoogleFonts.manrope(
@@ -70,8 +81,21 @@ class VehicleDetailsScreen extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              ontap: () {
-                Get.toNamed(AppRoutes.submitDocuments);
+              ontap: () async {
+                if (!formKey.currentState!.validate()) return;
+                if (userController.isloading.value) return;
+
+                final driverProfile = DriverProfile(
+                  vehicleRegNumber: vehicleRegistrationNumberController.text,
+                  carColor: vehicleColorController.text,
+                  carModel: vehicleModelController.text,
+                  carPlate: vehiclePlateNumberController.text,
+                  vehicleYear: vehicleYearController.text,
+                );
+
+                await userController.registerVehicleDetails(
+                  driverProfile: driverProfile,
+                );
               },
             ),
           ],

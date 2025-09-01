@@ -62,6 +62,7 @@ class OtpVerificationScreen extends StatelessWidget {
                 SizedBox(height: Get.height * 0.08),
                 Center(
                   child: Pinput(
+                    controller: otpController,
                     onCompleted: (value) async {
                       await authController.verifyOtp(
                         otpCode: value,
