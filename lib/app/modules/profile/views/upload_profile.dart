@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
+import 'package:ridexpressdriver/app/utils/image_picker.dart';
 
 class UploadProfile extends StatelessWidget {
-  const UploadProfile({super.key});
+  UploadProfile({super.key});
+
+  final selectedFile = Rx<File?>(null);
 
   @override
   Widget build(BuildContext context) {
@@ -84,18 +89,34 @@ class UploadProfile extends StatelessWidget {
   Stack _buildStackImage() {
     return Stack(
       children: [
-        CircleAvatar(
-          radius: 70,
-          backgroundColor: Color.fromARGB(255, 255, 225, 135),
-          child: Icon(Icons.person, size: 60, color: Colors.white),
-        ),
+        Obx(() {
+          if (selectedFile.value != null) {
+            return CircleAvatar(
+              radius: 70,
+              backgroundColor: Color.fromARGB(255, 255, 225, 135),
+              backgroundImage: FileImage(selectedFile.value!),
+            );
+          }
+          return CircleAvatar(
+            radius: 70,
+            backgroundColor: Color.fromARGB(255, 255, 225, 135),
+            child: Icon(Icons.person, size: 60, color: Colors.white),
+          );
+        }),
         Positioned(
           right: 0,
           bottom: 0,
-          child: CircleAvatar(
-            radius: 20,
-            backgroundColor: AppColors.primaryColor,
-            child: Icon(Icons.camera_alt_outlined, color: Colors.white),
+          child: InkWell(
+            onTap: () async {
+              final im = await pickImage();
+              if (im == null) return;
+              selectedFile.value = im;
+            },
+            child: CircleAvatar(
+              radius: 20,
+              backgroundColor: AppColors.primaryColor,
+              child: Icon(Icons.camera_alt_outlined, color: Colors.white),
+            ),
           ),
         ),
       ],
