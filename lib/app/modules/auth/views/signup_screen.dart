@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/controller/auth_controller.dart';
+import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
@@ -9,6 +12,16 @@ class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
 
   final RxBool isObScure = false.obs;
+  final authController = Get.find<AuthController>();
+
+  final formKey = GlobalKey<FormState>();
+
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final stateController = TextEditingController();
+  final cityController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +40,9 @@ class SignupScreen extends StatelessWidget {
     );
   }
 
-  Form _buildFormFields() {
+  Widget _buildFormFields() {
     return Form(
+      key: formKey,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
@@ -36,22 +50,45 @@ class SignupScreen extends StatelessWidget {
             CustomTextField(
               prefixIcon: Icons.person,
               prefixIconColor: AppColors.primaryColor,
-              controller: TextEditingController(),
-              hintText: "Full Name",
+              controller: firstNameController,
+              hintText: "First Name",
+            ),
+            SizedBox(height: Get.height * 0.02),
+            CustomTextField(
+              prefixIcon: Icons.person,
+              prefixIconColor: AppColors.primaryColor,
+              controller: lastNameController,
+              hintText: "Last Name",
             ),
             SizedBox(height: Get.height * 0.02),
             CustomTextField(
               prefixIcon: Icons.email,
               prefixIconColor: AppColors.primaryColor,
-              controller: TextEditingController(),
+              controller: emailController,
               hintText: "Email Address",
             ),
+
+            SizedBox(height: Get.height * 0.02),
+            CustomTextField(
+              prefixIcon: Icons.home,
+              prefixIconColor: AppColors.primaryColor,
+              controller: stateController,
+              hintText: "State of Residence",
+            ),
+            SizedBox(height: Get.height * 0.02),
+            CustomTextField(
+              prefixIcon: Icons.home,
+              prefixIconColor: AppColors.primaryColor,
+              controller: cityController,
+              hintText: "City",
+            ),
+
             SizedBox(height: Get.height * 0.02),
             Obx(
               () => CustomTextField(
                 prefixIcon: Icons.lock,
                 prefixIconColor: AppColors.primaryColor,
-                controller: TextEditingController(),
+                controller: passwordController,
                 hintText: "Enter password",
                 isObscure: isObScure.value,
                 suffixIcon: isObScure.value
@@ -63,21 +100,8 @@ class SignupScreen extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height: Get.height * 0.02),
-            CustomTextField(
-              prefixIcon: Icons.home,
-              prefixIconColor: AppColors.primaryColor,
-              controller: TextEditingController(),
-              hintText: "State of Residence",
-            ),
-            SizedBox(height: Get.height * 0.02),
-            CustomTextField(
-              prefixIcon: Icons.home,
-              prefixIconColor: AppColors.primaryColor,
-              controller: TextEditingController(),
-              hintText: "City",
-            ),
-            SizedBox(height: Get.height * 0.12),
+
+            SizedBox(height: Get.height * 0.05),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -97,18 +121,36 @@ class SignupScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   InkWell(
-                    onTap: () {
-                      Get.toNamed(AppRoutes.phoneAuthentication);
+                    onTap: () async {
+                      if (!formKey.currentState!.validate()) return;
+                      final userData = UserModel(
+                        firstName: firstNameController.text,
+                        lastName: lastNameController.text,
+                        email: emailController.text,
+                        password: passwordController.text,
+                        driverProfile: DriverProfile(
+                          state: stateController.text,
+                          city: cityController.text,
+                        ),
+                      );
+                      await authController.driverRegister(userModel: userData);
                     },
-                    child: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: AppColors.primaryColor,
-                      child: Icon(Icons.arrow_forward, color: Colors.white),
+                    child: Obx(
+                      () => CircleAvatar(
+                        radius: 25,
+                        backgroundColor: AppColors.primaryColor,
+                        child: authController.isLoading.value
+                            ? CupertinoActivityIndicator(
+                                color: Colors.white,
+                              )
+                            : Icon(Icons.arrow_forward, color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
+            SizedBox(height: Get.height * 0.02),
           ],
         ),
       ),

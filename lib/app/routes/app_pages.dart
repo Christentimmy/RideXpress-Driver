@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/change_password_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/otp_verification_screen.dart';
@@ -32,7 +33,18 @@ class AppPages {
     GetPage(name: AppRoutes.onboarding, page: () => const OnboardingScreen()),
     GetPage(name: AppRoutes.signup, page: () => SignupScreen()),
     GetPage(name: AppRoutes.loginScreen, page: () => LoginScreen()),
-    GetPage(name: AppRoutes.otpScreen, page: () => OtpVerificationScreen()),
+    GetPage(
+      name: AppRoutes.otpScreen,
+      page: () {
+        final args = Get.arguments;
+        String email = args['email'] ?? "";
+        VoidCallback? whatNext = args['whatNext'];
+        if (email.isEmpty) {
+          throw Exception(["email-field-required"]);
+        }
+        return OtpVerificationScreen(email: email, whatNext: whatNext);
+      },
+    ),
     GetPage(name: AppRoutes.uploadProfile, page: () => UploadProfile()),
     GetPage(name: AppRoutes.selectVehicle, page: () => SelectVehicleScreen()),
     GetPage(

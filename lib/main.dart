@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/bindings/app_bindings.dart';
 import 'package:ridexpressdriver/app/routes/app_pages.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/theme/app_theme.dart';
@@ -18,6 +19,7 @@ class MainApp extends StatelessWidget {
       getPages: AppPages.pages,
       debugShowCheckedModeBanner: false,
       theme: appTheme,
+      initialBinding: AppBindings(),
     );
   }
 }

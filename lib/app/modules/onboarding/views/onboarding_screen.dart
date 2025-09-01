@@ -14,9 +14,11 @@ class OnboardingScreen extends StatelessWidget {
       body: Stack(
         children: [
           Container(
+            margin: EdgeInsets.only(top: Get.height * 0.1),
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/ellipse.png"),
+                fit: BoxFit.cover,
               ),
             ),
           ),
