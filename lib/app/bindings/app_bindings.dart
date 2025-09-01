@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/controller/auth_controller.dart';
+import 'package:ridexpressdriver/app/controller/network_controller.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 
@@ -10,5 +11,6 @@ class AppBindings implements Bindings {
     Get.put(StorageController());
     Get.put(AuthController());
     Get.put(UserController());
+    Get.put(NetworkController());
   }
 }

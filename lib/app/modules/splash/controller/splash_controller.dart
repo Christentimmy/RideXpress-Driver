@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/controller/storage_controller.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 
 class SplashController extends GetxController with GetTickerProviderStateMixin {
@@ -33,8 +35,18 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
     );
 
     // Navigate after 2 seconds
-    Future.delayed(const Duration(seconds: 2), () {
-      Get.offAllNamed(AppRoutes.onboarding);
+    Future.delayed(const Duration(seconds: 2), () async {
+      final storageController = Get.find<StorageController>();
+      bool newUser = await storageController.getUserStatus();
+      if (newUser) {
+        Get.offAll(AppRoutes.onboarding);
+        await storageController.saveStatus("notNewAgain");
+        return;
+      }
+      final userController = Get.find<UserController>();
+      bool hasNaviagted = await userController.getUserStatus();
+      if (hasNaviagted) return;
+      Get.offNamed(AppRoutes.bottomNavigationWidget);
     });
   }
 

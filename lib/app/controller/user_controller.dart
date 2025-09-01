@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/controller/auth_controller.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/data/services/user_service.dart';
@@ -159,4 +160,90 @@ class UserController extends GetxController {
     }
   }
 
+  Future<void> updateOnlineStatus({required String status}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.updateOnlineStatus(
+        token: token,
+        status: status,
+      );
+      if (response == null) return;
+      if (response.statusCode != 200) return;
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<bool> getUserStatus() async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) {
+        CustomSnackbar.showErrorToast("Authentication required");
+        Get.toNamed(AppRoutes.loginScreen);
+        return true;
+      }
+
+      final response = await _userService.getUserStatus(token: token);
+      if (response == null) {
+        Get.toNamed(AppRoutes.loginScreen);
+        return true;
+      }
+      final decoded = json.decode(response.body);
+
+      if (response.statusCode != 200) {
+        Get.toNamed(AppRoutes.loginScreen);
+        return true;
+      }
+      final userData = decoded["data"];
+      if (userData == null) {
+        Get.toNamed(AppRoutes.loginScreen);
+        return true;
+      }
+      String status = userData["status"] ?? "";
+      String email = userData["email"] ?? "";
+
+      if (status != "active") {
+        Get.toNamed(AppRoutes.loginScreen);
+        CustomSnackbar.showErrorToast("Account $status");
+        return true;
+      }
+
+      bool isEmailVerified = userData["is_email_verified"] ?? false;
+
+      if (isEmailVerified != true) {
+        await Get.find<AuthController>().sendOtp(email: email);
+        Get.toNamed(
+          AppRoutes.otpScreen,
+          arguments: {
+            "email": email,
+            "whatNext": () async {
+              await getUserStatus();
+              // Get.toNamed(AppRoutes.bottomNavigationWidget);
+            },
+          },
+        );
+        CustomSnackbar.showErrorToast("Email not verified");
+        return true;
+      }
+
+      bool profileCompleted = userData["profile_completed"] ?? false;
+      if (!profileCompleted) {
+        Get.toNamed(AppRoutes.uploadProfile);
+        return true;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+    return false;
+  }
 }

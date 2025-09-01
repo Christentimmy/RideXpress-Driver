@@ -22,9 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 10), () {
-      tripStatus.value = "rides";
-    });
+    // Future.delayed(Duration(seconds: 10), () {
+    //   tripStatus.value = "rides";
+    // });
   }
 
   @override

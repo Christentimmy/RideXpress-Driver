@@ -126,30 +126,38 @@ class UserService {
         Uri.parse('$baseUrl/user/upload-vehicle-docs'),
       );
 
-      request.headers.addAll({
-        'Authorization': 'Bearer $token',
-      });
+      request.headers.addAll({'Authorization': 'Bearer $token'});
 
-      request.files.add(await http.MultipartFile.fromPath(
-        'driver_license',
-        driverLicensePath.path,
-      ));
-      request.files.add(await http.MultipartFile.fromPath(
-        'vehicle_license',
-        vehicleLicensePath.path,
-      ));
-      request.files.add(await http.MultipartFile.fromPath(
-        'vehicle_insurance',
-        vehicleInsurancePath.path,
-      ));
-      request.files.add(await http.MultipartFile.fromPath(
-        'mot_certificate',
-        motCertificatePath.path,
-      ));
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'driver_license',
+          driverLicensePath.path,
+        ),
+      );
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'vehicle_license',
+          vehicleLicensePath.path,
+        ),
+      );
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'vehicle_insurance',
+          vehicleInsurancePath.path,
+        ),
+      );
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'mot_certificate',
+          motCertificatePath.path,
+        ),
+      );
 
-      final streamedResponse = await request.send().timeout(const Duration(seconds: 120));
+      final streamedResponse = await request.send().timeout(
+        const Duration(seconds: 120),
+      );
       final response = await http.Response.fromStream(streamedResponse);
-      
+
       return response;
     } on SocketException catch (e) {
       debugPrint("No internet connection $e");
@@ -160,4 +168,53 @@ class UserService {
     }
     return null;
   }
+
+  Future<http.Response?> updateOnlineStatus({
+    required String token,
+    required String status,
+  }) async {
+    try {
+      final response = await client
+          .post(
+            Uri.parse("$baseUrl/user/update-availability-status"),
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "application/json",
+            },
+            body: jsonEncode({"status": status}),
+          )
+          .timeout(const Duration(seconds: 30));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<http.Response?> getUserStatus({required String token}) async {
+    try {
+      final response = await client
+          .get(
+            Uri.parse("$baseUrl/user/get-user-status"),
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "application/json",
+            },
+          )
+          .timeout(const Duration(seconds: 15));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
 }
