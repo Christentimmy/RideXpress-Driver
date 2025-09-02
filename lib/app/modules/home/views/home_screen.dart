@@ -39,35 +39,51 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(51.507351, -0.127758),
-              zoom: 15.0,
-            ),
-          ),
-          _buildHeader(),
-          // _buildEmptyRide(),
-          // _buildRides(),
-          // _buildRideAccepted(),
-          // _buildRideArrived(),
-          // _builTripStarted(),
-          // _buildDestinationReached(),
-          // Obx(() => _buildTripStatus(tripStatus.value)),
-          Obx((){
-            if(userController.rideRequestList.isEmpty){
-              return _buildEmptyRide();
-            }
-            return ListView.builder(
-              itemCount: userController.rideRequestList.length,
-              itemBuilder: (context, index) {
-                final rideRequest = userController.rideRequestList[index];
-                return _buildRides(rideRequest: rideRequest);
+      body: SafeArea(
+        child: Stack(
+          children: [
+            GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(51.507351, -0.127758),
+                zoom: 15.0,
+              ),
+              onMapCreated: (controller) {
+                final location = userController.userModel.value?.location;
+                if (location == null) {
+                  return;
+                }
+                controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: LatLng(location.lat!, location.lng!),
+                      zoom: 15.0,
+                    ),
+                  ),
+                );
               },
-            );
-          }),
-        ],
+            ),
+            _buildHeader(),
+            // _buildEmptyRide(),
+            // _buildRides(),
+            // _buildRideAccepted(),
+            // _buildRideArrived(),
+            // _builTripStarted(),
+            // _buildDestinationReached(),
+            // Obx(() => _buildTripStatus(tripStatus.value)),
+            Obx(() {
+              if (userController.rideRequestList.isEmpty) {
+                return _buildEmptyRide();
+              }
+              return ListView.builder(
+                itemCount: userController.rideRequestList.length,
+                itemBuilder: (context, index) {
+                  final rideRequest = userController.rideRequestList[index];
+                  return _buildRides(rideRequest: rideRequest);
+                },
+              );
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -76,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.only(
-        top: Get.height * 0.07,
+        top: Get.height * 0.02,
         left: 15,
         right: 15,
         bottom: 15,
@@ -656,9 +672,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Align _buildRides({
-    required RideModel rideRequest,
-  }) {
+  Align _buildRides({required RideModel rideRequest}) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: InkWell(
@@ -667,7 +681,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Container(
           width: Get.width,
-          margin: EdgeInsets.symmetric( 
+          margin: EdgeInsets.symmetric(
             vertical: Get.height * 0.05,
             horizontal: 15,
           ),

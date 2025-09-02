@@ -26,6 +26,12 @@ class UserController extends GetxController {
   RxString estimatedDistance = "".obs;
   final RxList<RideModel> rideHistory = <RideModel>[].obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    getUserDetails();
+  }
+
   Future<void> getUserDetails() async {
     isloading.value = true;
     try {

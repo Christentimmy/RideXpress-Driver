@@ -25,7 +25,7 @@ class SocketController extends GetxController with WidgetsBindingObserver {
       return;
     }
 
-    socket = io.io("https://774ba98dfbe0.ngrok-free.app", <String, dynamic>{
+    socket = io.io("https://6d08e5c95687.ngrok-free.app", <String, dynamic>{
       'transports': ['websocket'],
       'extraHeaders': {'Authorization': 'Bearer $token'},
       'reconnection': true,

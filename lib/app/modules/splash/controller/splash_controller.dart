@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/controller/socket_controller.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
@@ -46,6 +47,7 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
       final userController = Get.find<UserController>();
       bool hasNaviagted = await userController.getUserStatus();
       if (hasNaviagted) return;
+      await Get.find<SocketController>().initializeSocket();
       Get.offNamed(AppRoutes.bottomNavigationWidget);
     });
   }
