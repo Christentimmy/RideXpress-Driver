@@ -747,39 +747,30 @@ class _HomeScreenState extends State<HomeScreen> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/ai.jpg"),
+                  backgroundImage: NetworkImage(
+                    rideRequest.riderModel?.avatar ?? "",
+                  ),
                 ),
                 title: Text(
-                  "Joshua Tobi",
+                  "${rideRequest.riderModel?.firstName} ${rideRequest.riderModel?.lastName}",
                   style: GoogleFonts.manrope(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                subtitle: Row(
-                  children: [
-                    FaIcon(
-                      FontAwesomeIcons.solidStar,
-                      color: AppColors.primaryColor,
-                      size: 18,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      "4.5",
-                      style: GoogleFonts.manrope(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
-                  ],
+                subtitle: Text(
+                  rideRequest.status?.value ?? "",
+                  style: GoogleFonts.manrope(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 trailing: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      "1.6m",
+                      "${rideRequest.eta?.distance}km",
                       style: GoogleFonts.manrope(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -787,7 +778,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Text(
-                      "2 mins",
+                      "${rideRequest.eta?.minutes} mins",
                       style: GoogleFonts.manrope(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -804,14 +795,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           ListTile(
                             leading: Icon(Icons.location_on),
                             title: Text(
-                              "Durham",
+                              "Pickup Location",
                               style: GoogleFonts.manrope(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             subtitle: Text(
-                              "Bernard Castle, Durham, United Kingdom",
+                              rideRequest.pickupLocation?.address ?? "",
                               style: GoogleFonts.manrope(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
@@ -821,14 +812,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           ListTile(
                             leading: Icon(Icons.location_on),
                             title: Text(
-                              "Devon",
+                              "Drop Off Location",
                               style: GoogleFonts.manrope(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             subtitle: Text(
-                              "East Devon District, Devon, United Kingdom",
+                              rideRequest.dropOffLocation?.address ?? "",
                               style: GoogleFonts.manrope(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,

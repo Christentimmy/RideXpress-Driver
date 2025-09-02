@@ -205,7 +205,7 @@ class UserService {
               "Content-Type": "application/json",
             },
           )
-          .timeout(const Duration(seconds: 15));
+          .timeout(const Duration(seconds: 5));
       return response;
     } on SocketException catch (e) {
       debugPrint("No internet connection $e");

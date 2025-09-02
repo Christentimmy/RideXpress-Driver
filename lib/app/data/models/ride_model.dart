@@ -33,6 +33,8 @@ class RideModel {
 
  RxBool isExpanded = false.obs;
 
+ EtaModel? eta;
+
   RideModel({
     this.id,
     this.rider,
@@ -57,6 +59,8 @@ class RideModel {
     this.carSeat,
     this.wheelChairAccessible,
     this.createdAt,
+
+    this.eta,
   });
 
   Map<String, dynamic> toJson() {
@@ -116,11 +120,29 @@ class RideModel {
       createdAt: json["createdAt"] != null
           ? DateTime.parse(json["createdAt"])
           : null,
+      eta: json["eta"] != null ? EtaModel.fromJson(json["eta"]) : null,
     );
   }
 
   @override
   String toString() {
     return 'RideModel(id: $id, rider: $rider, driver: $driver, status: $status, pickupLocation: $pickupLocation, dropOffLocation: $dropOffLocation, fare: $fare, requestedAt: $requestedAt, paymentMethod: $paymentMethod, paymentStatus: $paymentStatus, transactionId: $transactionId, amountPaid: $amountPaid, ratedByRider: $ratedByRider, ratedByDriver: $ratedByDriver, stops: $stops, carSeat: $carSeat, wheelChairAccessible: $wheelChairAccessible)';
+  }
+}
+
+class EtaModel {
+  String? distance;
+  String? minutes;
+
+  EtaModel({
+    this.distance,
+    this.minutes,
+  });
+
+  factory EtaModel.fromJson(Map<String, dynamic> json) {
+    return EtaModel(
+      distance: json["distance_km"]?.toString() ?? "",
+      minutes: json["minutes"]?.toString() ?? "",
+    );
   }
 }
