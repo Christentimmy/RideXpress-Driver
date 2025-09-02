@@ -137,4 +137,20 @@ class AuthController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> logout() async {
+    try {
+      final storageController = Get.find<StorageController>();
+      await storageController.deleteToken();
+      Get.find<UserController>().clean();
+      final token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _authService.logout(token: token);
+      if (response == null) return;
+      if (response.statusCode != 200) return;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 }

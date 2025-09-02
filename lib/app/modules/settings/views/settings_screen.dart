@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/controller/auth_controller.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
@@ -33,7 +34,6 @@ class SettingsScreen extends StatelessWidget {
               onTap: () {
                 Get.toNamed(AppRoutes.editProfileScreen);
               },
-
             ),
             // _buildSettingItem(
             //   title: 'Document',
@@ -47,6 +47,16 @@ class SettingsScreen extends StatelessWidget {
                 Get.toNamed(AppRoutes.changePasswordScreen);
               },
             ),
+            _buildSettingItem(
+              title: 'Logout',
+              icon: Icons.logout,
+              iconColor: Colors.red,
+              textColor: Colors.red,
+              onTap: () async {
+                Get.toNamed(AppRoutes.loginScreen);
+                await Get.find<AuthController>().logout();
+              },
+            ),
           ],
         ),
       ),
@@ -55,18 +65,30 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _buildSettingItem({
     required String title,
-    required String subtitle,
+    IconData? icon,
+    Color? textColor,
+    Color? iconColor,
+    String? subtitle,
     bool showInfo = false,
     VoidCallback? onTap,
   }) {
     return ListTile(
       onTap: onTap,
-      leading: const Icon(Icons.person, color: Color(0xFFFFC107)),
+      leading: Icon(
+        icon ?? Icons.person,
+        color: iconColor ?? Color(0xFFFFC107),
+      ),
       title: Text(
         title,
-        style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 16),
+        style: GoogleFonts.manrope(
+          color: textColor ?? Colors.black,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
       ),
-      subtitle: Text(subtitle, style: GoogleFonts.manrope(color: Colors.grey)),
+      subtitle: subtitle != null
+          ? Text(subtitle, style: GoogleFonts.manrope(color: Colors.grey))
+          : null,
       trailing: showInfo
           ? Row(
               mainAxisSize: MainAxisSize.min,

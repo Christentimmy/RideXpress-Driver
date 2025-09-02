@@ -29,6 +29,9 @@ class RideModel {
   //for json only fields not from backend
   int? carSeat;
   bool? wheelChairAccessible;
+  final DateTime? createdAt;
+
+ RxBool isExpanded = false.obs;
 
   RideModel({
     this.id,
@@ -53,6 +56,7 @@ class RideModel {
 
     this.carSeat,
     this.wheelChairAccessible,
+    this.createdAt,
   });
 
   Map<String, dynamic> toJson() {
@@ -84,14 +88,16 @@ class RideModel {
       dropOffLocation: json["dropoff_location"] != null
           ? LocationModel.fromJson(json["dropoff_location"])
           : null,
-      fare: num.parse(json["fare"].toString()),
+      fare: json['fare'] != null ? num.tryParse(json['fare'].toString()) : null,
       requestedAt: json["requested_at"] != null
           ? DateTime.parse(json["requested_at"])
           : null,
       paymentMethod: json["payment_method"] ?? "",
       paymentStatus: json["payment_status"] ?? "",
       transactionId: json["transaction_id"] ?? "",
-      amountPaid: num.parse(json["amount_paid"].toString()),
+      amountPaid: json['amount_paid'] != null
+          ? num.tryParse(json['amount_paid'].toString())
+          : null,
       ratedByRider: json["rated_by_rider"] ?? false,
       ratedByDriver: json["rated_by_driver"] ?? false,
       stops: json["stops"] != null
@@ -107,6 +113,9 @@ class RideModel {
           ? UserModel.fromJson(json["riderProfile"])
           : null,
       rating: json["rating"] ?? 0,
+      createdAt: json["createdAt"] != null
+          ? DateTime.parse(json["createdAt"])
+          : null,
     );
   }
 

@@ -13,6 +13,7 @@ import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
 
 class UserController extends GetxController {
   final isloading = false.obs;
+  final rideRequestLoading = false.obs;
   Rxn<UserModel> userModel = Rxn<UserModel>();
   final _userService = UserService();
   final rideRequestList = <RideModel>[].obs;
@@ -266,7 +267,7 @@ class UserController extends GetxController {
   }
 
   Future<void> getRideRequest() async {
-    isloading.value = true;
+    rideRequestLoading.value = true;
     try {
       final storageController = Get.find<StorageController>();
       String? token = await storageController.getToken();
@@ -282,14 +283,15 @@ class UserController extends GetxController {
       }
       List rideRequest = decoded["data"] ?? [];
       if (rideRequest.isEmpty) return;
-      final mappedRideRequest = rideRequest
+
+      List<RideModel> mappedRideRequest = rideRequest
           .map((x) => RideModel.fromJson(x))
           .toList();
       rideRequestList.value = mappedRideRequest;
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      isloading.value = false;
+      rideRequestLoading.value = false;
     }
   }
 
@@ -316,5 +318,12 @@ class UserController extends GetxController {
     } finally {
       isloading.value = false;
     }
+  }
+
+  void clean() {
+    rideRequestList.value = [];
+    rideRequestLoading.value = false;
+    isloading.value = false;
+    userModel.value = null;
   }
 }

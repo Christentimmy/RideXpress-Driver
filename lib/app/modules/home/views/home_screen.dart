@@ -1,3 +1,4 @@
+import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -19,7 +20,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final RxBool isExpanded = false.obs;
   final RxString tripStatus = "".obs;
 
   final userController = Get.find<UserController>();
@@ -62,27 +62,58 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
+
             _buildHeader(),
-            // _buildEmptyRide(),
-            // _buildRides(),
-            // _buildRideAccepted(),
-            // _buildRideArrived(),
-            // _builTripStarted(),
-            // _buildDestinationReached(),
-            // Obx(() => _buildTripStatus(tripStatus.value)),
             Obx(() {
+              if (userController.rideRequestLoading.value) {
+                return buildLoder();
+              }
               if (userController.rideRequestList.isEmpty) {
                 return _buildEmptyRide();
               }
-              return ListView.builder(
-                itemCount: userController.rideRequestList.length,
-                itemBuilder: (context, index) {
-                  final rideRequest = userController.rideRequestList[index];
-                  return _buildRides(rideRequest: rideRequest);
-                },
+              return Align(
+                alignment: Alignment.bottomCenter,
+                child: IntrinsicHeight(
+                  child: AppinioSwiper(
+                    cardCount: userController.rideRequestList.length,
+                    cardBuilder: (context, index) {
+                      final rideRequest = userController.rideRequestList[index];
+                      return _buildRides(rideRequest: rideRequest);
+                    },
+                  ),
+                ),
               );
             }),
           ],
+        ),
+      ),
+    );
+  }
+
+  Align buildLoder() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: Get.height * 0.3,
+        width: Get.width,
+        margin: EdgeInsets.symmetric(
+          vertical: Get.height * 0.05,
+          horizontal: 15,
+        ),
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              offset: Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Center(
+          child: CircularProgressIndicator(color: AppColors.primaryColor),
         ),
       ),
     );
@@ -672,15 +703,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Align _buildRides({required RideModel rideRequest}) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: InkWell(
-        onTap: () {
-          isExpanded.value = !isExpanded.value;
-        },
-        child: Container(
+  Widget _buildRides({required RideModel rideRequest}) {
+    return InkWell(
+      onTap: () {
+        rideRequest.isExpanded.value = !rideRequest.isExpanded.value;
+      },
+      child: Obx(
+        () => Container(
           width: Get.width,
+          height: rideRequest.isExpanded.value
+              ? Get.height * 0.4
+              : Get.height * 0.25,
           margin: EdgeInsets.symmetric(
             vertical: Get.height * 0.05,
             horizontal: 15,
@@ -705,7 +738,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SizedBox(
                   width: Get.width * 0.4,
                   child: Obx(
-                    () => isExpanded.value
+                    () => rideRequest.isExpanded.value
                         ? Icon(Icons.keyboard_arrow_up_rounded)
                         : Icon(Icons.keyboard_arrow_down_rounded),
                   ),
@@ -765,50 +798,46 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Obx(() {
-                return AnimatedSize(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  child: isExpanded.value
-                      ? Column(
-                          children: [
-                            ListTile(
-                              leading: Icon(Icons.location_on),
-                              title: Text(
-                                "Durham",
-                                style: GoogleFonts.manrope(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              subtitle: Text(
-                                "Bernard Castle, Durham, United Kingdom",
-                                style: GoogleFonts.manrope(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.normal,
-                                ),
+                return rideRequest.isExpanded.value
+                    ? Column(
+                        children: [
+                          ListTile(
+                            leading: Icon(Icons.location_on),
+                            title: Text(
+                              "Durham",
+                              style: GoogleFonts.manrope(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                            ListTile(
-                              leading: Icon(Icons.location_on),
-                              title: Text(
-                                "Devon",
-                                style: GoogleFonts.manrope(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              subtitle: Text(
-                                "East Devon District, Devon, United Kingdom",
-                                style: GoogleFonts.manrope(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.normal,
-                                ),
+                            subtitle: Text(
+                              "Bernard Castle, Durham, United Kingdom",
+                              style: GoogleFonts.manrope(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
                               ),
                             ),
-                          ],
-                        )
-                      : SizedBox.shrink(),
-                );
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.location_on),
+                            title: Text(
+                              "Devon",
+                              style: GoogleFonts.manrope(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            subtitle: Text(
+                              "East Devon District, Devon, United Kingdom",
+                              style: GoogleFonts.manrope(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox.shrink();
               }),
               SizedBox(height: 10),
               Row(

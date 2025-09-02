@@ -100,6 +100,22 @@ class AuthService {
     }
   }
 
+  Future<http.Response?> logout({required String token}) async {
+    try {
+      final response = await client
+          .post(
+            Uri.parse("$baseUrl/auth/logout"),
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "application/json",
+            },
+          )
+          .timeout(const Duration(seconds: 15));
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
 
-  
 }

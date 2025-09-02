@@ -54,6 +54,10 @@ class SocketController extends GetxController with WidgetsBindingObserver {
   }
 
   void listenToEvents() {
+    socket?.on("ride-request", (data) async {
+      await Get.find<UserController>().getRideRequest();
+    });
+
     socket?.on("tripStatus", (data) async {
       String status = data["data"]?["status"] ?? "";
       final ride = data["data"]?["ride"];
@@ -70,7 +74,8 @@ class SocketController extends GetxController with WidgetsBindingObserver {
         final eta = data["data"]?["eta"];
         if (eta != null) {
           userController.estimatedArrivalTime.value = eta["minutes"].toString();
-          userController.estimatedDistance.value = eta["distance_km"].toString();
+          userController.estimatedDistance.value = eta["distance_km"]
+              .toString();
         }
       }
     });
