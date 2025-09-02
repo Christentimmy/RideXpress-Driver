@@ -81,5 +81,25 @@ class AuthService {
     }
   }
 
+  Future<http.Response?> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await client
+          .post(
+            Uri.parse("$baseUrl/auth/login"),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({"identifier": email, "password": password}),
+          )
+          .timeout(const Duration(seconds: 15));
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
 
+
+  
 }

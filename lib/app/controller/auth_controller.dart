@@ -33,17 +33,14 @@ class AuthController extends GetxController {
 
       await Get.find<UserController>().getUserDetails();
 
-      Get.toNamed(
-        AppRoutes.otpScreen,
-        arguments: {"email": userModel.email},
-      );
+      Get.toNamed(AppRoutes.otpScreen, arguments: {"email": userModel.email});
     } catch (e) {
       debugPrint(e.toString());
     } finally {
       isLoading.value = false;
     }
   }
- 
+
   Future<void> sendOtp({required String email}) async {
     isLoading.value = true;
     try {
@@ -96,4 +93,48 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    isLoading.value = true;
+    try {
+      final response = await _authService.login(
+        email: email,
+        password: password,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      String message = decoded["message"] ?? "";
+      String userEmail = decoded["email"] ?? "";
+      final storageController = Get.find<StorageController>();
+      final token = decoded["token"] ?? "";
+      await storageController.storeToken(token);
+
+      if (response.statusCode == 402) {
+        await sendOtp(email: userEmail);
+        Get.toNamed(
+          AppRoutes.otpScreen,
+          arguments: {
+            "email": userEmail,
+            "whatNext": () {
+              Get.toNamed(AppRoutes.bottomNavigationWidget);
+            },
+          },
+        );
+        return;
+      }
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      await Get.find<UserController>().getUserDetails();
+
+      Get.toNamed(AppRoutes.bottomNavigationWidget);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

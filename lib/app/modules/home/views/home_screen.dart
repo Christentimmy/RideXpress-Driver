@@ -3,6 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ridexpressdriver/app/controller/location_controller.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
+import 'package:ridexpressdriver/app/data/models/ride_model.dart';
 import 'package:ridexpressdriver/app/modules/home/widgets/home_widgets.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
@@ -19,9 +22,15 @@ class _HomeScreenState extends State<HomeScreen> {
   final RxBool isExpanded = false.obs;
   final RxString tripStatus = "".obs;
 
+  final userController = Get.find<UserController>();
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      userController.getRideRequest();
+      Get.find<LocationController>().initializeLocation();
+    });
     // Future.delayed(Duration(seconds: 10), () {
     //   tripStatus.value = "rides";
     // });
@@ -45,7 +54,19 @@ class _HomeScreenState extends State<HomeScreen> {
           // _buildRideArrived(),
           // _builTripStarted(),
           // _buildDestinationReached(),
-          Obx(() => _buildTripStatus(tripStatus.value)),
+          // Obx(() => _buildTripStatus(tripStatus.value)),
+          Obx((){
+            if(userController.rideRequestList.isEmpty){
+              return _buildEmptyRide();
+            }
+            return ListView.builder(
+              itemCount: userController.rideRequestList.length,
+              itemBuilder: (context, index) {
+                final rideRequest = userController.rideRequestList[index];
+                return _buildRides(rideRequest: rideRequest);
+              },
+            );
+          }),
         ],
       ),
     );
@@ -84,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case "":
         return _buildEmptyRide();
       case "rides":
-        return _buildRides();
+        return _buildRides(rideRequest: RideModel());
       case "rideAccepted":
         return _buildRideAccepted();
       case "rideArrived":
@@ -635,7 +656,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Align _buildRides() {
+  Align _buildRides({
+    required RideModel rideRequest,
+  }) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: InkWell(
@@ -644,7 +667,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Container(
           width: Get.width,
-          margin: EdgeInsets.symmetric(
+          margin: EdgeInsets.symmetric( 
             vertical: Get.height * 0.05,
             horizontal: 15,
           ),

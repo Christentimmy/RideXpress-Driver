@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/controller/auth_controller.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
+import 'package:ridexpressdriver/app/data/models/ride_model.dart';
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/data/services/user_service.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
@@ -14,6 +15,16 @@ class UserController extends GetxController {
   final isloading = false.obs;
   Rxn<UserModel> userModel = Rxn<UserModel>();
   final _userService = UserService();
+  final rideRequestList = <RideModel>[].obs;
+
+  //ride
+  final isRequestloading = false.obs;
+  final Rxn<RideModel> currentRide = Rxn<RideModel>(null);
+  final RxString rideStatus = "".obs;
+  Rxn<UserModel> detectedDriver = Rxn<UserModel>();
+  RxString estimatedArrivalTime = "".obs;
+  RxString estimatedDistance = "".obs;
+  final RxList<RideModel> rideHistory = <RideModel>[].obs;
 
   Future<void> getUserDetails() async {
     isloading.value = true;
@@ -235,7 +246,8 @@ class UserController extends GetxController {
       }
 
       bool profileCompleted = userData["profile_completed"] ?? false;
-      if (!profileCompleted) {
+      String role = userData["role"] ?? "";
+      if (role == "driver" && !profileCompleted) {
         Get.toNamed(AppRoutes.uploadProfile);
         return true;
       }
@@ -245,5 +257,58 @@ class UserController extends GetxController {
       isloading.value = false;
     }
     return false;
+  }
+
+  Future<void> getRideRequest() async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.getRideRequest(token: token);
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      List rideRequest = decoded["data"] ?? [];
+      if (rideRequest.isEmpty) return;
+      final mappedRideRequest = rideRequest
+          .map((x) => RideModel.fromJson(x))
+          .toList();
+      rideRequestList.value = mappedRideRequest;
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> updateLocation({required LocationModel location}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.updateLocation(
+        token: token,
+        location: location,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
   }
 }
