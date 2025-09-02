@@ -5,6 +5,7 @@ import 'package:ridexpressdriver/app/modules/auth/views/otp_verification_screen.
 import 'package:ridexpressdriver/app/modules/auth/views/login_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/phone_authentication_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/signup_screen.dart';
+import 'package:ridexpressdriver/app/modules/book/views/trip_status_screen.dart';
 import 'package:ridexpressdriver/app/modules/chat/view/chat_screen.dart';
 import 'package:ridexpressdriver/app/modules/home/views/home_screen.dart';
 import 'package:ridexpressdriver/app/modules/home/views/rate_driver_screen.dart';
@@ -96,5 +97,6 @@ class AppPages {
       name: AppRoutes.changePasswordScreen,
       page: () => ChangePasswordScreen(),
     ),
+    GetPage(name: AppRoutes.tripStatusScreen, page: () => TripStatusScreen()),
   ];
 }

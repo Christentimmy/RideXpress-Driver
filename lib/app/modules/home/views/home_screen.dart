@@ -147,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTripStatus(String status) {
+  Widget buildTripStatus(String status) {
     switch (status) {
       case "":
         return _buildEmptyRide();
@@ -883,4 +883,5 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
 }
