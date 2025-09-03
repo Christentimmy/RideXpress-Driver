@@ -348,6 +348,32 @@ class UserController extends GetxController {
     }
   }
 
+  Future<void> declineRide({required String rideId}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.declineRide(
+        token: token,
+        rideId: rideId,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      CustomSnackbar.showSuccessToast(message);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
   Future<void> arrivedAtPickUp({
     required String rideId,
     required RxString status,
@@ -506,6 +532,34 @@ class UserController extends GetxController {
       isloading.value = false;
     }
   }
+
+  Future<void> cancelRide({required String rideId}) async {
+    isRequestloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.cancelRide(
+        token: token,
+        rideId: rideId,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      CustomSnackbar.showSuccessToast(message);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isRequestloading.value = false;
+    }
+  }
+
+
 
   void clean() {
     rideRequestList.value = [];

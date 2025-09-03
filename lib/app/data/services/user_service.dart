@@ -422,4 +422,57 @@ class UserService {
     }
     return null;
   }
+
+  Future<http.Response?> cancelRide({
+    required String token,
+    required String rideId,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse("$baseUrl/user/cancel-ride"),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({"rideId": rideId}),
+          )
+          .timeout(const Duration(seconds: 15));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint("❌ Error cancelling ride: $e");
+    }
+    return null;
+  }
+
+  Future<http.Response?> declineRide({
+    required String token,
+    required String rideId,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse("$baseUrl/user/decline-ride"),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({"rideId": rideId}),
+          )
+          .timeout(const Duration(seconds: 15));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint("❌ Error declining ride: $e");
+    }
+    return null;
+  }
+
 }

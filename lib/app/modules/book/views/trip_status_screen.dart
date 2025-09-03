@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/data/models/ride_model.dart';
-import 'package:ridexpressdriver/app/modules/home/widgets/home_widgets.dart';
+import 'package:ridexpressdriver/app/modules/home/widgets/online_switch_widget.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
@@ -345,7 +345,7 @@ class TripStatusScreen extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    _displayCancelBottomSheet();
+                    _displayCancelBottomSheet(rideModel: rideModel);
                   },
                   child: Text(
                     "Cancel Ride",
@@ -385,7 +385,7 @@ class TripStatusScreen extends StatelessWidget {
     );
   }
 
-  Future<dynamic> _displayCancelBottomSheet() {
+  Future<dynamic> _displayCancelBottomSheet({required RideModel rideModel}) {
     return showModalBottomSheet(
       context: Get.context!,
       builder: (context) {
@@ -404,57 +404,39 @@ class TripStatusScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: Get.height * 0.04),
-              Center(
-                child: Text(
-                  "Rider didn’t show",
-                  style: GoogleFonts.manrope(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-              ),
+              cancelRideText(text: "Rider didn’t show"),
               Divider(),
               SizedBox(height: Get.height * 0.01),
-              Center(
-                child: Text(
-                  "Rider requested cancel",
-                  style: GoogleFonts.manrope(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-              ),
+              cancelRideText(text: "Rider requested cancel"),
               Divider(),
               SizedBox(height: Get.height * 0.01),
-              Center(
-                child: Text(
-                  "Wrong address shown",
-                  style: GoogleFonts.manrope(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-              ),
+              cancelRideText(text: "Wrong address shown"),
               Divider(),
               SizedBox(height: Get.height * 0.01),
-              Center(
-                child: Text(
-                  "Other",
-                  style: GoogleFonts.manrope(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-              ),
+              cancelRideText(text: "Other"),
               Divider(),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget cancelRideText({required String text}) {
+    return InkWell(
+      onTap: () async {
+        if (rideModel.id == null) return;
+        Get.offAllNamed(AppRoutes.bottomNavigationWidget);
+        await userController.cancelRide(rideId: rideModel.id!);
+      },
+      child: Text(
+        text,
+        style: GoogleFonts.manrope(
+          fontSize: 17,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryColor,
+        ),
+      ),
     );
   }
 
