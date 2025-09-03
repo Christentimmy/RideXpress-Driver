@@ -774,5 +774,24 @@ class UserController extends GetxController {
     rideRequestLoading.value = false;
     isloading.value = false;
     userModel.value = null;
+    totalRides.value = 0;
+    totalRidesToday.value = 0;
+    acceptanceRatePercentage.value = 0;
+    cancellationRatePercentage.value = 0;
+    isRequestloading.value = false;
+    rideHistory.value = [];
+    currentPage.value = 1;
+    hasMorePage.value = false;
+    chatHistoryAndLiveMessage.value = [];
+    ratings.value = [];
+    isAcceptLoading.value = false;
+    isDeclineLoading.value = false;
+    rideRequestLoading.value = false;
+    isloading.value = false;
+    userModel.value = null;
+    totalRides.value = 0;
+    totalRidesToday.value = 0;
+    acceptanceRatePercentage.value = 0;
+    cancellationRatePercentage.value = 0;
   }
 }

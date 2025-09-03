@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ridexpressdriver/app/controller/auth_controller.dart';
+import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
@@ -64,6 +65,7 @@ class LoginScreen extends StatelessWidget {
           ),
 
           SizedBox(height: Get.height * 0.02),
+
           // Padding(
           //   padding: const EdgeInsets.symmetric(horizontal: 15),
           //   child: Text(
@@ -107,6 +109,33 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          SizedBox(height: Get.height * 0.01),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Don't have an account?",
+                style: GoogleFonts.manrope(
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Get.toNamed(AppRoutes.signup);
+                },
+                child: Text(
+                  "Sign Up",
+                  style: GoogleFonts.manrope(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
