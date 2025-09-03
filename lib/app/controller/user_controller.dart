@@ -499,7 +499,11 @@ class UserController extends GetxController {
         CustomSnackbar.showErrorToast(message);
         return;
       }
-      Get.toNamed(AppRoutes.bottomNavigationWidget);
+      final rideModel = RideModel.fromJson(decoded["data"]);
+      Get.toNamed(
+        AppRoutes.rateDriverScreen,
+        arguments: {"rideModel": rideModel},
+      );
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -531,6 +535,7 @@ class UserController extends GetxController {
         CustomSnackbar.showErrorToast(message);
         return;
       }
+      await getRideRequest();
       CustomSnackbar.showSuccessToast(message);
       Get.offAllNamed(AppRoutes.bottomNavigationWidget);
     } catch (e) {

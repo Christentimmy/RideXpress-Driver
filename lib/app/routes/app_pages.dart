@@ -97,7 +97,14 @@ class AppPages {
     GetPage(name: AppRoutes.altMyTripsScreen, page: () => AltMyTripsScreen()),
     GetPage(
       name: AppRoutes.altTripDetailsScreen,
-      page: () => AltTripDetailsScreen(),
+      page: () {
+        final arguments = Get.arguments;
+        final rideModel = arguments['rideModel'];
+        if (rideModel == null) {
+          throw Exception("Ride model is null");
+        }
+        return AltTripDetailsScreen(rideModel: rideModel);
+      },
     ),
     GetPage(name: AppRoutes.settingsScreen, page: () => SettingsScreen()),
     GetPage(name: AppRoutes.tripsStatsScreen, page: () => TripsStatsScreen()),

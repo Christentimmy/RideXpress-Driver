@@ -483,7 +483,10 @@ class _AltMyTripsScreenState extends State<AltMyTripsScreen> {
   }) {
     return InkWell(
       onTap: () {
-        Get.toNamed(AppRoutes.altTripDetailsScreen);
+        Get.toNamed(
+          AppRoutes.altTripDetailsScreen,
+          arguments: {"rideModel": rideModel},
+        );
       },
       child: Container(
         width: double.infinity,
