@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/utils/base_url.dart';
+import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
 
 class UserService {
   final http.Client client = http.Client();
@@ -508,5 +509,35 @@ class UserService {
       debugPrint("❌ Error get ride history: $e");
     }
     return null;
+  }
+
+  Future<http.Response?> getMessageHistory({
+    required String token,
+    required String rideId,
+  }) async {
+    try {
+      http.Response response = await client
+          .get(
+            Uri.parse("$baseUrl/message/history/$rideId"),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 60));
+      return response;
+    } on SocketException catch (e) {
+      CustomSnackbar.showErrorToast("Check internet connection");
+      debugPrint("No internet connection $e");
+      return null;
+    } on TimeoutException {
+      CustomSnackbar.showErrorToast(
+        "Request timeout, probably bad network, try again",
+      );
+      debugPrint("Request timeout");
+      return null;
+    } catch (e) {
+      throw Exception("Unexpected error $e");
+    }
   }
 }

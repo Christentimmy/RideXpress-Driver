@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
+import 'package:ridexpressdriver/app/data/models/message_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class SocketController extends GetxController with WidgetsBindingObserver {
@@ -55,6 +56,37 @@ class SocketController extends GetxController with WidgetsBindingObserver {
     socket?.on("ride-request", (data) async {
       await Get.find<UserController>().getRideRequest();
     });
+
+    socket?.on("receive-message", (data) {
+      final message = Map<String, dynamic>.from(data);
+      final messageModel = MessageModel.fromJson(message);
+      final messageController = Get.find<UserController>();
+
+      // Check if the message already exists to avoid duplicates
+      final exists = messageController.chatHistoryAndLiveMessage.any(
+        (msg) => msg.id == messageModel.id,
+      );
+
+      if (exists) return;
+      final index = messageController.chatHistoryAndLiveMessage.indexWhere(
+        (msg) => msg.clientGeneratedId == messageModel.clientGeneratedId,
+      );
+      if (index != -1) {
+        messageController.chatHistoryAndLiveMessage[index].mediaUrl =
+            messageModel.mediaUrl;
+        messageController.chatHistoryAndLiveMessage[index].multipleImages =
+            messageModel.multipleImages;
+        messageController.chatHistoryAndLiveMessage[index].id = messageModel.id;
+        messageController.chatHistoryAndLiveMessage[index].avater =
+            messageModel.avater;
+        messageController.chatHistoryAndLiveMessage[index].createdAt =
+            messageModel.createdAt;
+        messageController.chatHistoryAndLiveMessage.refresh();
+      } else {
+        messageController.chatHistoryAndLiveMessage.add(messageModel);
+      }
+    });
+  
   }
 
   void scheduleReconnect() {

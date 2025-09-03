@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/controller/auth_controller.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
+import 'package:ridexpressdriver/app/data/models/message_model.dart';
 import 'package:ridexpressdriver/app/data/models/ride_model.dart';
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/data/services/user_service.dart';
@@ -27,6 +27,9 @@ class UserController extends GetxController {
   //pagination
   final RxInt currentPage = 1.obs;
   final RxBool hasMorePage = false.obs;
+
+  //chat
+  RxList<MessageModel> chatHistoryAndLiveMessage = <MessageModel>[].obs;
 
   @override
   void onInit() {
@@ -602,6 +605,41 @@ class UserController extends GetxController {
       } else {
         rideHistory.value = resData.map((e) => RideModel.fromJson(e)).toList();
       }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> getMessageHistory({required String rideId}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) {
+        CustomSnackbar.showErrorToast("Authentication required");
+        return;
+      }
+
+      final response = await _userService.getMessageHistory(
+        token: token,
+        rideId: rideId,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      String message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      List chatHistory = decoded["data"] ?? [];
+      chatHistoryAndLiveMessage.clear();
+      if (chatHistory.isEmpty) return;
+      List<MessageModel> mapped = chatHistory
+          .map((json) => MessageModel.fromJson(json))
+          .toList();
+      chatHistoryAndLiveMessage.assignAll(mapped);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
