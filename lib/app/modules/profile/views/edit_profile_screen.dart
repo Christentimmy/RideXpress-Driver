@@ -1,144 +1,118 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
+import 'package:ridexpressdriver/app/utils/image_picker.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
+import 'dart:io';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
 
 class EditProfileScreen extends StatelessWidget {
-  const EditProfileScreen({super.key});
+  EditProfileScreen({super.key});
+
+  final userController = Get.find<UserController>();
+  final Rx<File?> imageFile = Rx<File?>(null);
+
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneNumberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Edit Profile',
-          style: GoogleFonts.manrope(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      appBar: AppBar(title: Text("Edit Profile")),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: ListView(
             children: [
-              SizedBox(height: Get.height * 0.04),
-              _buildStackImage(),
-              SizedBox(height: Get.height * 0.06),
-              Text(
-                "First Name",
-                style: GoogleFonts.manrope(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFADB3BC),
-                ),
-              ),
-              CustomTextField(
-                hintText: "David",
-                hintStyle: GoogleFonts.manrope(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF858585),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFADB3BC)),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.primaryColor),
-                ),
-              ),
-              SizedBox(height: Get.height * 0.02),
-              Text(
-                "Last Name",
-                style: GoogleFonts.manrope(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFADB3BC),
-                ),
-              ),
-              CustomTextField(
-                hintText: "David",
-                hintStyle: GoogleFonts.manrope(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF858585),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFADB3BC)),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.primaryColor),
-                ),
-              ),
-              SizedBox(height: Get.height * 0.02),
-              Text(
-                "Phone Number",
-                style: GoogleFonts.manrope(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFADB3BC),
-                ),
-              ),
-              CustomTextField(
-                hintText: "+234 8565 4745",
-                suffixIcon: Icons.verified,
-                suffixIconcolor: Colors.green,
-                hintStyle: GoogleFonts.manrope(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF858585),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFADB3BC)),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.primaryColor),
-                ),
-              ),
-              SizedBox(height: Get.height * 0.02),
-              Text(
-                "Email",
-                style: GoogleFonts.manrope(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFADB3BC),
-                ),
-              ),
-              CustomTextField(
-                hintText: "davidseyi@gmail.com",
-                suffixIcon: Icons.verified,
-                suffixIconcolor: Colors.orange,
-                hintStyle: GoogleFonts.manrope(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF858585),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFADB3BC)),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.primaryColor),
-                ),
-              ),
+              SizedBox(height: Get.height * 0.03),
+              _buildImageAvater(),
               SizedBox(height: Get.height * 0.05),
-              Center(
-                child: CustomButton(
-                  ontap: () {},
-                  width: Get.width * 0.45,
-                  isLoading: false.obs,
-                  child: Text(
-                    "Save",
-                    style: GoogleFonts.manrope(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+              // Text(
+              //   "First Name",
+              //   style: GoogleFonts.poppins(
+              //     fontSize: 13,
+              //     color: Colors.grey.shade400,
+              //     fontWeight: FontWeight.normal,
+              //   ),
+              // ),
+              CustomTextField(
+                hintText: "First Name",
+                controller: firstNameController,
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.primaryColor),
+                ),
+              ),
+              SizedBox(height: Get.height * 0.02),
+              CustomTextField(
+                hintText: "Last Name",
+                controller: lastNameController,
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.primaryColor),
+                ),
+              ),
+              SizedBox(height: Get.height * 0.02),
+              CustomTextField(
+                hintText: "Email",
+                controller: emailController,
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.primaryColor),
+                ),
+                // suffixIcon: FontAwesomeIcons.circleCheck,
+                // suffixIconcolor: Colors.green,
+              ),
+              SizedBox(height: Get.height * 0.02),
+              CustomTextField(
+                hintText: "Phone Number",
+                controller: phoneNumberController,
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.primaryColor),
+                ),
+                // suffixIcon: FontAwesomeIcons.circleXmark,
+                // suffixIconcolor: Colors.red,
+              ),
+              SizedBox(height: Get.height * 0.1),
+              CustomButton(
+                isLoading: userController.isloading,
+                ontap: () async {
+                  if (userController.isloading.value) return;
+                  UserModel userModel = UserModel();
+                  if (firstNameController.text.isNotEmpty) {
+                    userModel.firstName = firstNameController.text;
+                  }
+                  if (lastNameController.text.isNotEmpty) {
+                    userModel.lastName = lastNameController.text;
+                  }
+                  if (emailController.text.isNotEmpty) {
+                    userModel.email = emailController.text;
+                  }
+                  if (phoneNumberController.text.isNotEmpty) {
+                    userModel.phone = phoneNumberController.text;
+                  }
+                  await userController.editProfile(
+                    userModel: userModel,
+                    file: imageFile.value,
+                  );
+                },
+                child: Text(
+                  "Save",
+                  style: Get.textTheme.bodyMedium!.copyWith(
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -149,25 +123,51 @@ class EditProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStackImage() {
+  Widget _buildImageAvater() {
     return Center(
       child: Stack(
         children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Color.fromARGB(255, 255, 225, 135),
-            backgroundImage: AssetImage("assets/images/ai.jpg"),
+          Container(
+            padding: EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.primaryColor, width: 2),
+            ),
+            child: Obx(() {
+              if (imageFile.value != null) {
+                return CircleAvatar(
+                  radius: 45,
+                  backgroundImage: FileImage(imageFile.value!),
+                );
+              }
+              if (userController.userModel.value?.avatar != null) {
+                return CircleAvatar(
+                  radius: 45,
+                  backgroundImage: NetworkImage(
+                    userController.userModel.value!.avatar!,
+                  ),
+                );
+              }
+              return CircleAvatar(
+                radius: 45,
+                backgroundImage: AssetImage("assets/images/placeholder.png"),
+              );
+            }),
           ),
           Positioned(
-            right: 2,
-            bottom: 2,
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: AppColors.primaryColor,
-              child: Icon(
-                Icons.camera_alt_outlined,
-                color: Colors.white,
-                size: 15,
+            bottom: 0,
+            right: 0,
+            child: InkWell(
+              onTap: () async {
+                final im = await pickImage();
+                if (im == null) return;
+                imageFile.value = im;
+              },
+              child: CircleAvatar(
+                radius: 14,
+                backgroundColor: AppColors.primaryColor,
+                child: Icon(Icons.camera_alt, size: 16, color: Colors.white),
               ),
             ),
           ),

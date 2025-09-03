@@ -1,48 +1,95 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
+import 'package:ridexpressdriver/app/data/models/rating_model.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
-class TripsStatsScreen extends StatelessWidget {
+class TripsStatsScreen extends StatefulWidget {
   const TripsStatsScreen({super.key});
+
+  @override
+  State<TripsStatsScreen> createState() => _TripsStatsScreenState();
+}
+
+class _TripsStatsScreenState extends State<TripsStatsScreen> {
+  final userController = Get.find<UserController>();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userController.ratings.isEmpty) {
+        userController.getAllRatings();
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            SizedBox(height: Get.height * 0.06),
-            Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: Text(
-                'Recent Reviews',
-                style: GoogleFonts.manrope(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+      body: RefreshIndicator(
+        color: AppColors.primaryColor,
+        onRefresh: () async {
+          await userController.getAllRatings();
+        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              SizedBox(height: Get.height * 0.06),
+              Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: Text(
+                  'Recent Reviews',
+                  style: GoogleFonts.manrope(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            _buildReviewCard(title: 'Tomi Ayo', subtitle: 'Account, Personal'),
-            _buildReviewCard(
-              title: 'James Bayo',
-              subtitle: 'Driver’s License, Report',
-            ),
-            _buildReviewCard(
-              title: 'Richard Brown',
-              subtitle: 'Password, TouchID',
-            ),
-          ],
+              const SizedBox(height: 10),
+              Obx(() {
+                if (userController.isloading.value) {
+                  return SizedBox(
+                    height: Get.height * 0.35,
+                    width: Get.width,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                  );
+                }
+                if (userController.ratings.isEmpty) {
+                  return SizedBox(
+                    height: Get.height * 0.35,
+                    width: Get.width,
+                    child: Center(child: Text("No ratings yet")),
+                  );
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: userController.ratings.length,
+                  itemBuilder: (context, index) {
+                    final rating = userController.ratings[index];
+                    return _buildReviewCard(rating: rating);
+                  },
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildReviewCard({required String title, required String subtitle}) {
+  Widget _buildReviewCard({required RatingModel rating}) {
     return ListTile(
       leading: CircleAvatar(
         radius: 22,
@@ -52,7 +99,7 @@ class TripsStatsScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            title,
+            "${rating.rider?.firstName} ${rating.rider?.lastName}",
             style: GoogleFonts.manrope(
               fontWeight: FontWeight.bold,
               fontSize: 15,
@@ -60,13 +107,13 @@ class TripsStatsScreen extends StatelessWidget {
           ),
           SizedBox(width: 10),
           Text(
-            "(2 days ago)",
+            "${DateTime.now().difference(rating.createdAt ?? DateTime.now()).inDays} days ago",
             style: GoogleFonts.manrope(color: Colors.grey, fontSize: 11),
           ),
         ],
       ),
       subtitle: Text(
-        subtitle,
+        rating.riderComment ?? "",
         style: GoogleFonts.manrope(color: Colors.grey, fontSize: 11),
       ),
       trailing: Row(
@@ -101,19 +148,22 @@ class TripsStatsScreen extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            top: Get.height * 0.18,
-            left: Get.width * 0.4,
+          Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  "3,251",
-                  style: GoogleFonts.manrope(
-                    fontSize: 30,
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Obx(() {
+                  final rides = userController.totalRides.value;
+                  return Text(
+                    rides.toString(),
+                    style: GoogleFonts.manrope(
+                      fontSize: 30,
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }),
                 Text(
                   "Trips",
                   style: GoogleFonts.manrope(
@@ -144,27 +194,6 @@ class TripsStatsScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "4500",
-                        style: GoogleFonts.manrope(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                      Text(
-                        "Trips",
-                        style: GoogleFonts.manrope(
-                          fontSize: 11,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ],
-                  ),
                   InkWell(
                     onTap: () {
                       Get.toNamed(AppRoutes.acceptanceScreen);
@@ -176,14 +205,18 @@ class TripsStatsScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "92%",
-                              style: GoogleFonts.manrope(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primaryColor,
-                              ),
-                            ),
+                            Obx(() {
+                              final acceptanceRate =
+                                  userController.acceptanceRatePercentage.value;
+                              return Text(
+                                "$acceptanceRate%",
+                                style: GoogleFonts.manrope(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primaryColor,
+                                ),
+                              );
+                            }),
                             Icon(
                               Icons.arrow_forward_ios,
                               size: 22,
@@ -212,14 +245,19 @@ class TripsStatsScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "2%",
-                              style: GoogleFonts.manrope(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primaryColor,
-                              ),
-                            ),
+                            Obx(() {
+                              final cancellationRate = userController
+                                  .cancellationRatePercentage
+                                  .value;
+                              return Text(
+                                "$cancellationRate%",
+                                style: GoogleFonts.manrope(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primaryColor,
+                                ),
+                              );
+                            }),
                             Icon(
                               Icons.arrow_forward_ios,
                               size: 22,

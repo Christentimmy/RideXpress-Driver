@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/utils/base_url.dart';
 import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 
 class UserService {
   final http.Client client = http.Client();
@@ -573,6 +575,71 @@ class UserService {
       final response = await http
           .get(
             Uri.parse("$baseUrl/user/get-driver-ride-stat"),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 60));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+      return null;
+    } on TimeoutException {
+      debugPrint("Request timeout");
+      return null;
+    } catch (e) {
+      throw Exception("Unexpected error $e");
+    }
+  }
+
+  Future<http.Response?> editProfile({
+    required String token,
+    File? file,
+    UserModel? userModel,
+  }) async {
+    try {
+      final uri = Uri.parse("$baseUrl/user/edit-profile");
+      final request = http.MultipartRequest('POST', uri);
+      request.headers.addAll(({"Authorization": "Bearer $token"}));
+      if (file != null) {
+        final mimeType =
+            lookupMimeType(file.path) ?? 'application/octet-stream';
+        final mimeSplit = mimeType.split('/');
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'avatar',
+            file.path,
+            contentType: MediaType(mimeSplit[0], mimeSplit[1]),
+          ),
+        );
+      }
+      if (userModel != null) {
+        request.fields.addAll(
+          userModel.toJson().map(
+            (key, value) => MapEntry(key, value.toString()),
+          ),
+        );
+      }
+      final streamedResponse = await request.send().timeout(
+        const Duration(seconds: 60),
+      );
+      return await http.Response.fromStream(streamedResponse);
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<http.Response?> getAllRatings({required String token}) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse("$baseUrl/user/get-rating"),
             headers: {
               'Authorization': 'Bearer $token',
               'Content-Type': 'application/json',

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/controller/auth_controller.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
 import 'package:ridexpressdriver/app/data/models/message_model.dart';
+import 'package:ridexpressdriver/app/data/models/rating_model.dart';
 import 'package:ridexpressdriver/app/data/models/ride_model.dart';
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:ridexpressdriver/app/data/services/user_service.dart';
@@ -23,6 +24,8 @@ class UserController extends GetxController {
   //ride
   final totalRidesToday = 0.obs;
   final totalRides = 0.obs;
+  final acceptanceRatePercentage = 0.obs;
+  final cancellationRatePercentage = 0.obs;
   final isRequestloading = false.obs;
   final RxList<RideModel> rideHistory = <RideModel>[].obs;
 
@@ -32,6 +35,9 @@ class UserController extends GetxController {
 
   //chat
   RxList<MessageModel> chatHistoryAndLiveMessage = <MessageModel>[].obs;
+
+  //ratings
+  final RxList<RatingModel> ratings = <RatingModel>[].obs;
 
   @override
   void onInit() {
@@ -699,6 +705,65 @@ class UserController extends GetxController {
       final stats = decoded["data"];
       if (stats == null) return;
       totalRides.value = stats["allTripCounts"];
+      acceptanceRatePercentage.value = stats["acceptanceRatePercentage"];
+      cancellationRatePercentage.value = stats["cancellationRatePercentage"];
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> editProfile({UserModel? userModel, File? file}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null) {
+        Get.offAll(() => Get.toNamed(AppRoutes.loginScreen));
+        return;
+      }
+      final response = await _userService.editProfile(
+        token: token,
+        userModel: userModel,
+        file: file,
+      );
+      if (response == null) return;
+      var responseBody = json.decode(response.body);
+      String message = responseBody["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      CustomSnackbar.showSuccessToast("Profile updated successfully");
+      await getUserDetails();
+      Get.back();
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> getAllRatings() async {
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) {
+        CustomSnackbar.showErrorToast("Authentication required");
+        return;
+      }
+
+      final response = await _userService.getAllRatings(token: token);
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      String message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      final ratings = decoded["data"];
+      if (ratings == null) return;
+      List mapped = ratings.map((json) => RatingModel.fromJson(json)).toList();
+      ratings.value = mapped;
     } catch (e) {
       debugPrint(e.toString());
     }

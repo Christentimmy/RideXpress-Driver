@@ -1,153 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:ridexpressdriver/app/utils/colors.dart';
+import 'package:ridexpressdriver/app/controller/auth_controller.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
-  const ChangePasswordScreen({super.key});
+  ChangePasswordScreen({super.key});
+
+  final authController = Get.find<AuthController>();
+
+  final currentPasswordController = TextEditingController();
+  final newPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         title: Text(
-          'Change Password',
-          style: GoogleFonts.manrope(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
+          "Change Password",
+          style: Get.textTheme.bodyMedium!.copyWith(
+            fontSize: 17,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: Get.height * 0.04),
-              _buildStackImage(),
-              SizedBox(height: Get.height * 0.06),
-              Text(
-                "Current Password",
-                style: GoogleFonts.manrope(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFADB3BC),
-                ),
-              ),
-              CustomTextField(
-                isObscure: true,
-                hintText: "***************",
-                hintStyle: GoogleFonts.manrope(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF858585),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFADB3BC)),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.primaryColor),
-                ),
-              ),
-              SizedBox(height: Get.height * 0.02),
-              Text(
-                "New Password",
-                style: GoogleFonts.manrope(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFADB3BC),
-                ),
-              ),
-              CustomTextField(
-                isObscure: true,
-                hintText: "***************",
-                hintStyle: GoogleFonts.manrope(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF858585),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFADB3BC)),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.primaryColor),
-                ),
-              ),
-              SizedBox(height: Get.height * 0.02),
-              Text(
-                "Confirm New Password",
-                style: GoogleFonts.manrope(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFADB3BC),
-                ),
-              ),
-              CustomTextField(
-                isObscure: true,
-                hintText: "***************",
-                hintStyle: GoogleFonts.manrope(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF858585),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFADB3BC)),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.primaryColor),
-                ),
-              ),
-              SizedBox(height: Get.height * 0.05),
-              Center(
-                child: CustomButton(
-                  ontap: () {},
-                  width: Get.width * 0.45,
-                  isLoading: false.obs,
-                  child: Text(
-                    "Save",
-                    style: GoogleFonts.manrope(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+              // SizedBox(height: Get.height * 0.03),
+              // Text(
+              //   "Current Password",
+              //   style: Get.textTheme.bodyMedium!.copyWith(
+              //     fontSize: 17,
+              //     fontWeight: FontWeight.w500,
+              //   ),
+              // ),
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    CustomTextField(
+                      hintText: "Current Password",
+                      controller: currentPasswordController,
+                      prefixIcon: Icons.lock,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
                     ),
+                    SizedBox(height: Get.height * 0.02),
+                    CustomTextField(
+                      hintText: "New Password",
+                      controller: newPasswordController,
+                      prefixIcon: Icons.lock,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                    SizedBox(height: Get.height * 0.02),
+                    CustomTextField(
+                      hintText: "Confirm Password",
+                      controller: confirmPasswordController,
+                      prefixIcon: Icons.lock,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Password is required";
+                        }
+                        if (value != newPasswordController.text) {
+                          return "Password does not match";
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: Get.height * 0.2),
+              CustomButton(
+                isLoading: authController.isLoading,
+                child: Text(
+                  "Save",
+                  style: Get.textTheme.bodyMedium!.copyWith(
+                    color: Colors.white,
                   ),
                 ),
+                ontap: () async {
+                  if (!formKey.currentState!.validate()) return;
+                  await authController.changePassword(
+                    newPassword: newPasswordController.text,
+                    oldPassword: currentPasswordController.text,
+                  );
+                },
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildStackImage() {
-    return Center(
-      child: Stack(
-        children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Color.fromARGB(255, 255, 225, 135),
-            backgroundImage: AssetImage("assets/images/ai.jpg"),
-          ),
-          Positioned(
-            right: 2,
-            bottom: 2,
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: AppColors.primaryColor,
-              child: Icon(
-                Icons.camera_alt_outlined,
-                color: Colors.white,
-                size: 15,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
