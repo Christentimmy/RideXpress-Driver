@@ -57,7 +57,7 @@ class SocketController extends GetxController with WidgetsBindingObserver {
       await Get.find<UserController>().getRideRequest();
     });
 
-    socket?.on("receive-message", (data) {
+    socket?.on("receiveMessage", (data) {
       final message = Map<String, dynamic>.from(data);
       final messageModel = MessageModel.fromJson(message);
       final messageController = Get.find<UserController>();
@@ -86,7 +86,16 @@ class SocketController extends GetxController with WidgetsBindingObserver {
         messageController.chatHistoryAndLiveMessage.add(messageModel);
       }
     });
-  
+  }
+
+  void joinRoom({required String rideId}) {
+    socket?.emit("joinRoom", {"roomId": rideId});
+  }
+
+  void sendMessage({required MessageModel message}) {
+    if (socket != null && socket!.connected) {
+      socket?.emit("sendMessage", message.toJson());
+    }
   }
 
   void scheduleReconnect() {

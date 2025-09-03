@@ -190,7 +190,9 @@ class TripStatusScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 25,
-                  backgroundImage: AssetImage("assets/images/ai.jpg"),
+                  backgroundImage: NetworkImage(
+                    rideModel.riderModel?.avatar ?? "",
+                  ),
                 ),
                 SizedBox(width: 20),
                 Text(
@@ -203,7 +205,10 @@ class TripStatusScreen extends StatelessWidget {
                 const Spacer(),
                 InkWell(
                   onTap: () {
-                    Get.toNamed(AppRoutes.chatScreen);
+                    Get.toNamed(
+                      AppRoutes.chatScreen,
+                      arguments: {"rideModel": rideModel},
+                    );
                   },
                   child: Icon(Icons.message),
                 ),
