@@ -157,7 +157,7 @@ class RideRequestCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CustomButton(
-                      isLoading: userController.isloading,
+                      isLoading: userController.isAcceptLoading,
                       height: 40,
                       padding: EdgeInsets.symmetric(vertical: 3),
                       borderRadius: BorderRadius.circular(20),

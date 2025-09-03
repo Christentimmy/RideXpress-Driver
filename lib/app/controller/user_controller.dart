@@ -13,6 +13,7 @@ import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
 
 class UserController extends GetxController {
   final isloading = false.obs;
+  final isAcceptLoading = false.obs;
   final isDeclineLoading = false.obs;
   final rideRequestLoading = false.obs;
   Rxn<UserModel> userModel = Rxn<UserModel>();
@@ -321,7 +322,7 @@ class UserController extends GetxController {
   }
 
   Future<void> acceptRide({required String rideId}) async {
-    isloading.value = true;
+    isAcceptLoading.value = true;
     try {
       final storageController = Get.find<StorageController>();
       String? token = await storageController.getToken();
@@ -346,7 +347,7 @@ class UserController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      isloading.value = false;
+      isAcceptLoading.value = false;
     }
   }
 
