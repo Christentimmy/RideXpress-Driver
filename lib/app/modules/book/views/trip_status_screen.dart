@@ -23,11 +23,7 @@ class TripStatusScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Stack(
-          children: [
-            buildlMap(),
-            _buildHeader(),
-            buildTripStatus(),
-          ],
+          children: [buildlMap(), _buildHeader(), buildTripStatus()],
         ),
       ),
     );
@@ -118,7 +114,7 @@ class TripStatusScreen extends StatelessWidget {
       if (rideStatus.value == "") return _buildEmptyRide();
       if (rideStatus.value == "accepted") return _buildRideAccepted();
       if (rideStatus.value == "arrived") return _buildRideArrived();
-      if (rideStatus.value == "tripStarted") return _builTripStarted();
+      if (rideStatus.value == "progress") return _builTripStarted();
       if (rideStatus.value == "destinationReached") {
         return _buildDestinationReached();
       }
@@ -280,43 +276,27 @@ class TripStatusScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "1:35 Waiting",
-                        style: GoogleFonts.manrope(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Text("You’ve arrived at the pick up location"),
-                      SizedBox(height: 5),
                       Row(
                         children: [
-                          Text(
-                            "Joshua Tobi",
-                            style: GoogleFonts.manrope(
-                              color: Colors.black,
-                              fontSize: 14,
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(
+                              rideModel.riderModel?.avatar ?? "",
                             ),
                           ),
                           SizedBox(width: 5),
-                          FaIcon(
-                            FontAwesomeIcons.solidStar,
-                            color: AppColors.primaryColor,
-                            size: 18,
-                          ),
-                          SizedBox(width: 5),
                           Text(
-                            "4.5",
+                            rideModel.riderModel?.firstName ?? "",
                             style: GoogleFonts.manrope(
-                              fontSize: 15,
+                              fontSize: 22,
                               fontWeight: FontWeight.w700,
                               color: AppColors.primaryColor,
                             ),
                           ),
                         ],
                       ),
+                      SizedBox(height: 5),
+                      Text("You’ve arrived at the pick up location"),
                     ],
                   ),
                 ),
@@ -337,14 +317,15 @@ class TripStatusScreen extends StatelessWidget {
             ),
             SizedBox(height: 15),
             CustomButton(
-              isLoading: false.obs,
+              isLoading: userController.isloading,
               height: 45,
               borderRadius: BorderRadius.circular(10),
-              ontap: () {
-                // tripStatus.value = "tripStarted";
-                // Future.delayed(Duration(seconds: 40), () {
-                //   tripStatus.value = "destinationReached";
-                // });
+              ontap: () async {
+                if (rideModel.id == null) return;
+                await userController.startUp(
+                  rideId: rideModel.id!,
+                  status: rideStatus,
+                );
               },
               child: Text(
                 "Start Up",
