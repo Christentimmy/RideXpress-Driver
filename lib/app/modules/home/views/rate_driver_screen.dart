@@ -41,33 +41,9 @@ class RateDriverScreen extends StatelessWidget {
           children: [
             _buildTripInfo(),
             SizedBox(height: Get.height * 0.03),
-            Center(
-              child: CircleAvatar(
-                radius: 53,
-                backgroundColor: Colors.black,
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                      rideModel.riderModel?.avatar ?? "",
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            buildAvatar(),
             SizedBox(height: 15),
-            Center(
-              child: Text(
-                "${rideModel.riderModel?.firstName} ${rideModel.riderModel?.lastName}",
-                textAlign: TextAlign.center,
-                style: Get.textTheme.bodyMedium!.copyWith(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
+            buildRiderInfo(),
             Center(
               child: Text(
                 "Rate your rider",
@@ -80,65 +56,107 @@ class RateDriverScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: Get.height * 0.04),
-            Center(
-              child: Obx(
-                () => RatingStars(
-                  value: value.value,
-                  onValueChanged: (v) {
-                    value.value = v;
-                  },
-                  starCount: 5,
-                  starSize: 30,
-                  maxValue: 5,
-                  starSpacing: 2,
-                  animationDuration: Duration(milliseconds: 1000),
-                  starOffColor: const Color(0xffe7e8ea),
-                  starColor: Colors.yellow,
-                  valueLabelVisibility: false,
-                ),
-              ),
-            ),
+            buildRatingStars(),
             SizedBox(height: Get.height * 0.07),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: CustomTextField(
-                controller: commentController,
-                bgColor: Color(0xFFF8F8F8),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.primaryColor),
-                ),
-                minLines: 5,
-                maxLines: 6,
-                hintText: "Leave a review about your experience",
-              ),
-            ),
+            buildRatingFormField(),
 
             SizedBox(height: Get.height * 0.02),
-            Center(
-              child: CustomButton(
-                width: Get.width * 0.75,
-                borderRadius: BorderRadius.circular(20),
-                ontap: () async {
-                  if (rideModel.id == null) return;
-                  userController.rateTrip(
-                    rating: value.value.toString(),
-                    comment: commentController.text,
-                    rideId: rideModel.id!,
-                  );
-                },
-                isLoading: userController.isloading,
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            buildRateButton(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Center buildRateButton() {
+    return Center(
+      child: CustomButton(
+        width: Get.width * 0.75,
+        borderRadius: BorderRadius.circular(20),
+        ontap: () async {
+          if (rideModel.id == null) return;
+          userController.rateTrip(
+            rating: value.value.toString(),
+            comment: commentController.text,
+            rideId: rideModel.id!,
+          );
+        },
+        isLoading: userController.isloading,
+        child: Text(
+          "Submit",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding buildRatingFormField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: CustomTextField(
+        controller: commentController,
+        bgColor: Color(0xFFF8F8F8),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.primaryColor),
+        ),
+        minLines: 5,
+        maxLines: 6,
+        hintText: "Leave a review about your experience",
+      ),
+    );
+  }
+
+  Center buildRatingStars() {
+    return Center(
+      child: Obx(
+        () => RatingStars(
+          value: value.value,
+          onValueChanged: (v) {
+            value.value = v;
+          },
+          starCount: 5,
+          starSize: 30,
+          maxValue: 5,
+          starSpacing: 2,
+          animationDuration: Duration(milliseconds: 1000),
+          starOffColor: const Color(0xffe7e8ea),
+          starColor: Colors.yellow,
+          valueLabelVisibility: false,
+        ),
+      ),
+    );
+  }
+
+  Center buildRiderInfo() {
+    return Center(
+      child: Text(
+        "${rideModel.riderModel?.firstName} ${rideModel.riderModel?.lastName}",
+        textAlign: TextAlign.center,
+        style: Get.textTheme.bodyMedium!.copyWith(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+
+  Center buildAvatar() {
+    return Center(
+      child: CircleAvatar(
+        radius: 53,
+        backgroundColor: Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: CircleAvatar(
+            radius: 50,
+            backgroundImage: NetworkImage(rideModel.riderModel?.avatar ?? ""),
+          ),
         ),
       ),
     );
