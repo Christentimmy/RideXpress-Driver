@@ -14,6 +14,9 @@ class CustomButton extends StatelessWidget {
   Widget? child;
   RxBool isLoading;
   Gradient? gradient;
+  EdgeInsets? padding;
+
+
   CustomButton({
     super.key,
     this.text,
@@ -26,6 +29,7 @@ class CustomButton extends StatelessWidget {
     this.child,
     required this.isLoading,
     this.gradient,
+    this.padding,
   });
 
   @override
@@ -34,6 +38,7 @@ class CustomButton extends StatelessWidget {
       onTap: ontap,
       child: Container(
         height: height ?? 55,
+        padding: padding,
         alignment: Alignment.center,
         width: width ?? Get.width,
         decoration: BoxDecoration(

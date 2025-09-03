@@ -835,15 +835,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Expanded(
                     child: CustomButton(
-                      isLoading: false.obs,
+                      isLoading: userController.isloading,
                       height: 40,
+                      padding: EdgeInsets.symmetric(vertical: 3),
                       borderRadius: BorderRadius.circular(20),
                       bgColor: Colors.green,
                       ontap: () async {
-                        tripStatus.value = "rideAccepted";
-                        await Future.delayed(Duration(seconds: 40), () {
-                          tripStatus.value = "rideArrived";
-                        });
+                        if (rideRequest.id == null) return;
+                        await userController.acceptRide(
+                          rideId: rideRequest.id!,
+                        );    
+                        // tripStatus.value = "rideAccepted";
+                        // await Future.delayed(Duration(seconds: 40), () {
+                        //   tripStatus.value = "rideArrived";
+                        // });
                       },
                       child: Text(
                         "Accept",
@@ -883,5 +888,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 }

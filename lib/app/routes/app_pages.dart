@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/data/models/ride_model.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/change_password_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/otp_verification_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/login_screen.dart';
@@ -97,6 +98,13 @@ class AppPages {
       name: AppRoutes.changePasswordScreen,
       page: () => ChangePasswordScreen(),
     ),
-    GetPage(name: AppRoutes.tripStatusScreen, page: () => TripStatusScreen()),
+    GetPage(
+      name: AppRoutes.tripStatusScreen,
+      page: () {
+        final arguments = Get.arguments;
+        final RideModel rideModel = arguments['rideModel'];
+        return TripStatusScreen(rideModel: rideModel);
+      },
+    ),
   ];
 }

@@ -320,6 +320,36 @@ class UserController extends GetxController {
     }
   }
 
+  Future<void> acceptRide({required String rideId}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.acceptRide(
+        token: token,
+        rideId: rideId,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      final rideModel = RideModel.fromJson(decoded["data"]);
+      Get.toNamed(
+        AppRoutes.tripStatusScreen,
+        arguments: {"rideModel": rideModel},
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
   void clean() {
     rideRequestList.value = [];
     rideRequestLoading.value = false;

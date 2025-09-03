@@ -1,12 +1,8 @@
-
-
-import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ridexpressdriver/app/controller/location_controller.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/data/models/ride_model.dart';
 import 'package:ridexpressdriver/app/modules/home/widgets/home_widgets.dart';
@@ -14,29 +10,10 @@ import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
 
-class TripStatusScreen extends StatefulWidget {
-  const TripStatusScreen({super.key});
-
-  @override
-  State<TripStatusScreen> createState() => _TripStatusScreenState();
-}
-
-class _TripStatusScreenState extends State<TripStatusScreen> {
-  final RxString tripStatus = "".obs;
-
+class TripStatusScreen extends StatelessWidget {
+  final RideModel rideModel;
+  TripStatusScreen({super.key, required this.rideModel});
   final userController = Get.find<UserController>();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      userController.getRideRequest();
-      Get.find<LocationController>().initializeLocation();
-    });
-    // Future.delayed(Duration(seconds: 10), () {
-    //   tripStatus.value = "rides";
-    // });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,51 +21,35 @@ class _TripStatusScreenState extends State<TripStatusScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(51.507351, -0.127758),
-                zoom: 15.0,
-              ),
-              onMapCreated: (controller) {
-                final location = userController.userModel.value?.location;
-                if (location == null) {
-                  return;
-                }
-                controller.animateCamera(
-                  CameraUpdate.newCameraPosition(
-                    CameraPosition(
-                      target: LatLng(location.lat!, location.lng!),
-                      zoom: 15.0,
-                    ),
-                  ),
-                );
-              },
-            ),
-
+            buildlMap(),
             _buildHeader(),
-            Obx(() {
-              if (userController.rideRequestLoading.value) {
-                return buildLoder();
-              }
-              if (userController.rideRequestList.isEmpty) {
-                return _buildEmptyRide();
-              }
-              return Align(
-                alignment: Alignment.bottomCenter,
-                child: IntrinsicHeight(
-                  child: AppinioSwiper(
-                    cardCount: userController.rideRequestList.length,
-                    cardBuilder: (context, index) {
-                      final rideRequest = userController.rideRequestList[index];
-                      return _buildRides(rideRequest: rideRequest);
-                    },
-                  ),
-                ),
-              );
-            }),
+            buildTripStatus(rideModel.status?.value),
           ],
         ),
       ),
+    );
+  }
+
+  GoogleMap buildlMap() {
+    return GoogleMap(
+      initialCameraPosition: CameraPosition(
+        target: LatLng(51.507351, -0.127758),
+        zoom: 15.0,
+      ),
+      onMapCreated: (controller) {
+        final location = userController.userModel.value?.location;
+        if (location == null) {
+          return;
+        }
+        controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(location.lat!, location.lng!),
+              zoom: 15.0,
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -149,13 +110,12 @@ class _TripStatusScreenState extends State<TripStatusScreen> {
     );
   }
 
-  Widget buildTripStatus(String status) {
+  Widget buildTripStatus(String? status) {
+    if (status == null) return _buildEmptyRide();
     switch (status) {
-      case "":
-        return _buildEmptyRide();
-      case "rides":
-        return _buildRides(rideRequest: RideModel());
-      case "rideAccepted":
+      // case "":
+      //   return _buildEmptyRide();
+      case "accepted":
         return _buildRideAccepted();
       case "rideArrived":
         return _buildRideArrived();
@@ -285,7 +245,7 @@ class _TripStatusScreenState extends State<TripStatusScreen> {
             SizedBox(height: 15),
             CustomButton(
               ontap: () {
-                tripStatus.value = "destinationReached";
+                rideModel.status!.value = "destinationReached";
               },
               isLoading: false.obs,
               height: 45,
@@ -383,10 +343,10 @@ class _TripStatusScreenState extends State<TripStatusScreen> {
               height: 45,
               borderRadius: BorderRadius.circular(10),
               ontap: () {
-                tripStatus.value = "tripStarted";
-                Future.delayed(Duration(seconds: 40), () {
-                  tripStatus.value = "destinationReached";
-                });
+                // tripStatus.value = "tripStarted";
+                // Future.delayed(Duration(seconds: 40), () {
+                //   tripStatus.value = "destinationReached";
+                // });
               },
               child: Text(
                 "Start Up",
@@ -582,7 +542,7 @@ class _TripStatusScreenState extends State<TripStatusScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "2 mins",
+                          "${rideModel.eta?.minutes} mins",
                           style: GoogleFonts.manrope(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
@@ -590,50 +550,54 @@ class _TripStatusScreenState extends State<TripStatusScreen> {
                           ),
                         ),
                         SizedBox(height: 5),
-                        Text("Joseph Babalola Road, Alausa"),
+                        Text(rideModel.pickupLocation?.address ?? ""),
                         SizedBox(height: 5),
                         Row(
                           children: [
                             Text(
-                              "Joshua Tobi",
+                              "${rideModel.riderModel?.firstName} ${rideModel.riderModel?.lastName}",
                               style: GoogleFonts.manrope(
                                 color: Colors.black,
                                 fontSize: 14,
                               ),
                             ),
                             SizedBox(width: 5),
-                            FaIcon(
-                              FontAwesomeIcons.solidStar,
-                              color: AppColors.primaryColor,
-                              size: 18,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              "4.5",
-                              style: GoogleFonts.manrope(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.primaryColor,
-                              ),
-                            ),
+                            // FaIcon(
+                            //   FontAwesomeIcons.solidStar,
+                            //   color: AppColors.primaryColor,
+                            //   size: 18,
+                            // ),
+                            // SizedBox(width: 5),
+                            // Text(
+                            //   "4.5",
+                            //   style: GoogleFonts.manrope(
+                            //     fontSize: 15,
+                            //     fontWeight: FontWeight.w700,
+                            //     color: AppColors.primaryColor,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  Text("20 Mileage"),
+                  Text("${rideModel.eta?.distance} Km"),
                 ],
               ),
               SizedBox(height: 15),
               CustomButton(
                 isLoading: false.obs,
                 bgColor: Colors.white,
-                border: Border.all(width: 1, color: Colors.grey),
+                border: Border.all(width: 1, color: AppColors.primaryColor),
                 child: Text(
-                  "Arriving Pick Up",
-                  style: GoogleFonts.manrope(color: Colors.grey, fontSize: 15),
+                  "Arrived",
+                  style: GoogleFonts.manrope(
+                    color: AppColors.primaryColor,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                ontap: () {},
+                ontap: () async {},
               ),
             ],
           ),
@@ -704,186 +668,4 @@ class _TripStatusScreenState extends State<TripStatusScreen> {
       ),
     );
   }
-
-  Widget _buildRides({required RideModel rideRequest}) {
-    return InkWell(
-      onTap: () {
-        rideRequest.isExpanded.value = !rideRequest.isExpanded.value;
-      },
-      child: Obx(
-        () => Container(
-          width: Get.width,
-          height: rideRequest.isExpanded.value
-              ? Get.height * 0.4
-              : Get.height * 0.25,
-          margin: EdgeInsets.symmetric(
-            vertical: Get.height * 0.05,
-            horizontal: 15,
-          ),
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10,
-                offset: Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: SizedBox(
-                  width: Get.width * 0.4,
-                  child: Obx(
-                    () => rideRequest.isExpanded.value
-                        ? Icon(Icons.keyboard_arrow_up_rounded)
-                        : Icon(Icons.keyboard_arrow_down_rounded),
-                  ),
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    rideRequest.riderModel?.avatar ?? "",
-                  ),
-                ),
-                title: Text(
-                  "${rideRequest.riderModel?.firstName} ${rideRequest.riderModel?.lastName}",
-                  style: GoogleFonts.manrope(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                subtitle: Text(
-                  rideRequest.status?.value ?? "",
-                  style: GoogleFonts.manrope(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      "${rideRequest.eta?.distance}km",
-                      style: GoogleFonts.manrope(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Text(
-                      "${rideRequest.eta?.minutes} mins",
-                      style: GoogleFonts.manrope(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Obx(() {
-                return rideRequest.isExpanded.value
-                    ? Column(
-                        children: [
-                          ListTile(
-                            leading: Icon(Icons.location_on),
-                            title: Text(
-                              "Pickup Location",
-                              style: GoogleFonts.manrope(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            subtitle: Text(
-                              rideRequest.pickupLocation?.address ?? "",
-                              style: GoogleFonts.manrope(
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.location_on),
-                            title: Text(
-                              "Drop Off Location",
-                              style: GoogleFonts.manrope(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            subtitle: Text(
-                              rideRequest.dropOffLocation?.address ?? "",
-                              style: GoogleFonts.manrope(
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : SizedBox.shrink();
-              }),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomButton(
-                      isLoading: false.obs,
-                      height: 40,
-                      borderRadius: BorderRadius.circular(20),
-                      bgColor: Colors.green,
-                      ontap: () async {
-                        tripStatus.value = "rideAccepted";
-                        await Future.delayed(Duration(seconds: 40), () {
-                          tripStatus.value = "rideArrived";
-                        });
-                      },
-                      child: Text(
-                        "Accept",
-                        style: GoogleFonts.manrope(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: CustomButton(
-                      height: 40,
-                      borderRadius: BorderRadius.circular(20),
-                      isLoading: false.obs,
-                      ontap: () {
-                        tripStatus.value = "";
-                      },
-                      bgColor: Colors.red,
-                      child: Text(
-                        "Decline",
-                        style: GoogleFonts.manrope(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
 }
