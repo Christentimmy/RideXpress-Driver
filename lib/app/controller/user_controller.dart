@@ -20,11 +20,9 @@ class UserController extends GetxController {
 
   //ride
   final isRequestloading = false.obs;
-  final Rxn<RideModel> currentRide = Rxn<RideModel>(null);
-  final RxString rideStatus = "".obs;
-  Rxn<UserModel> detectedDriver = Rxn<UserModel>();
-  RxString estimatedArrivalTime = "".obs;
-  RxString estimatedDistance = "".obs;
+  // final Rxn<RideModel> currentRide = Rxn<RideModel>(null);
+  // final RxString rideStatus = "".obs;
+
   final RxList<RideModel> rideHistory = <RideModel>[].obs;
 
   @override
@@ -347,6 +345,73 @@ class UserController extends GetxController {
       debugPrint(e.toString());
     } finally {
       isloading.value = false;
+    }
+  }
+
+  Future<void> arrivedAtPickUp({
+    required String rideId,
+    required RxString status,
+  }) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.arrivedAtPickUp(
+        token: token,
+        rideId: rideId,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      status.value = "arrived";
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> getCurrentRide() async {
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) {
+        Get.toNamed(AppRoutes.loginScreen);
+        return;
+      }
+
+      final response = await _userService.getCurrentRide(token: token);
+      if (response == null) {
+        Get.toNamed(AppRoutes.bottomNavigationWidget);
+        return;
+      }
+      final decoded = json.decode(response.body);
+      if (response.statusCode != 200) {
+        Get.toNamed(AppRoutes.bottomNavigationWidget);
+        return;
+      }
+      final data = decoded["data"];
+      if (data == null) {
+        Get.toNamed(AppRoutes.bottomNavigationWidget);
+        return;
+      }
+      final ride = data["ride"];
+      if (ride == null) {
+        Get.toNamed(AppRoutes.bottomNavigationWidget);
+        return;
+      }
+      print("Ride current status: ${ride["status"]}");
+      final mappedRide = RideModel.fromJson(ride);
+      Map<String, dynamic> arguments = {"rideModel": mappedRide};
+      Get.toNamed(AppRoutes.tripStatusScreen, arguments: arguments);
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 

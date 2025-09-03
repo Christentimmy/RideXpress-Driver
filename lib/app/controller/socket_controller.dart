@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
-import 'package:ridexpressdriver/app/data/models/ride_model.dart';
-import 'package:ridexpressdriver/app/data/models/user_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class SocketController extends GetxController with WidgetsBindingObserver {
@@ -56,28 +54,6 @@ class SocketController extends GetxController with WidgetsBindingObserver {
   void listenToEvents() {
     socket?.on("ride-request", (data) async {
       await Get.find<UserController>().getRideRequest();
-    });
-
-    socket?.on("tripStatus", (data) async {
-      String status = data["data"]?["status"] ?? "";
-      final ride = data["data"]?["ride"];
-      final driver = data["data"]?["driver"];
-
-      userController.rideStatus.value = status;
-      final rideData = RideModel.fromJson(ride);
-      userController.currentRide.value = rideData;
-
-      if (status == "accepted" && driver != null) {
-        final driverData = UserModel.fromJson(driver);
-        userController.detectedDriver.value = driverData;
-
-        final eta = data["data"]?["eta"];
-        if (eta != null) {
-          userController.estimatedArrivalTime.value = eta["minutes"].toString();
-          userController.estimatedDistance.value = eta["distance_km"]
-              .toString();
-        }
-      }
     });
   }
 

@@ -15,6 +15,7 @@ class CustomButton extends StatelessWidget {
   RxBool isLoading;
   Gradient? gradient;
   EdgeInsets? padding;
+  Color? loaderColor;
 
 
   CustomButton({
@@ -30,6 +31,7 @@ class CustomButton extends StatelessWidget {
     required this.isLoading,
     this.gradient,
     this.padding,
+    this.loaderColor,
   });
 
   @override
@@ -56,7 +58,7 @@ class CustomButton extends StatelessWidget {
         ),
         child: Obx(() {
           return isLoading.value
-              ? const CircularProgressIndicator(color: Colors.white)
+              ? CircularProgressIndicator(color: loaderColor ?? Colors.white)
               : child ?? Text(text.toString(), style: Get.textTheme.bodyMedium);
         }),
       ),

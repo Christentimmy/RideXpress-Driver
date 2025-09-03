@@ -15,15 +15,18 @@ class TripStatusScreen extends StatelessWidget {
   TripStatusScreen({super.key, required this.rideModel});
   final userController = Get.find<UserController>();
 
+  final RxString rideStatus = "".obs;
+
   @override
   Widget build(BuildContext context) {
+    rideStatus.value = rideModel.status?.value ?? "";
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
             buildlMap(),
             _buildHeader(),
-            buildTripStatus(rideModel.status?.value),
+            buildTripStatus(),
           ],
         ),
       ),
@@ -110,22 +113,17 @@ class TripStatusScreen extends StatelessWidget {
     );
   }
 
-  Widget buildTripStatus(String? status) {
-    if (status == null) return _buildEmptyRide();
-    switch (status) {
-      // case "":
-      //   return _buildEmptyRide();
-      case "accepted":
-        return _buildRideAccepted();
-      case "rideArrived":
-        return _buildRideArrived();
-      case "tripStarted":
-        return _builTripStarted();
-      case "destinationReached":
+  Widget buildTripStatus() {
+    return Obx(() {
+      if (rideStatus.value == "") return _buildEmptyRide();
+      if (rideStatus.value == "accepted") return _buildRideAccepted();
+      if (rideStatus.value == "arrived") return _buildRideArrived();
+      if (rideStatus.value == "tripStarted") return _builTripStarted();
+      if (rideStatus.value == "destinationReached") {
         return _buildDestinationReached();
-      default:
-        return _buildEmptyRide();
-    }
+      }
+      return _buildEmptyRide();
+    });
   }
 
   Widget _buildDestinationReached() {
@@ -586,9 +584,11 @@ class TripStatusScreen extends StatelessWidget {
               ),
               SizedBox(height: 15),
               CustomButton(
-                isLoading: false.obs,
+                isLoading: userController.isloading,
                 bgColor: Colors.white,
+
                 border: Border.all(width: 1, color: AppColors.primaryColor),
+                loaderColor: AppColors.primaryColor,
                 child: Text(
                   "Arrived",
                   style: GoogleFonts.manrope(
@@ -597,7 +597,12 @@ class TripStatusScreen extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                ontap: () async {},
+                ontap: () async {
+                  await userController.arrivedAtPickUp(
+                    rideId: rideModel.id!,
+                    status: rideStatus,
+                  );
+                },
               ),
             ],
           ),
