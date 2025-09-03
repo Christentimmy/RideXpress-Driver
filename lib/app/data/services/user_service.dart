@@ -365,4 +365,61 @@ class UserService {
     return null;
   }
 
+  Future<http.Response?> completeRide({
+    required String token,
+    required String rideId,
+  }) async {
+    try {
+      final response = await client
+          .post(
+            Uri.parse("$baseUrl/user/complete-ride"),
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "application/json",
+            },
+            body: jsonEncode({"rideId": rideId}),
+          )
+          .timeout(const Duration(seconds: 15));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<http.Response?> rateTrip({
+    required String token,
+    required String rating,
+    required String comment,
+    required String rideId,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse("$baseUrl/user/rate-trip"),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({
+              "rating": rating,
+              "comment": comment,
+              "rideId": rideId,
+            }),
+          )
+          .timeout(const Duration(seconds: 15));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint("❌ Error rate ride: $e");
+    }
+    return null;
+  }
 }

@@ -408,6 +408,13 @@ class UserController extends GetxController {
       }
       print("Ride current status: ${ride["status"]}");
       final mappedRide = RideModel.fromJson(ride);
+      if (mappedRide.status?.value == "completed") {
+        Get.toNamed(
+          AppRoutes.rateDriverScreen,
+          arguments: {"rideModel": mappedRide},
+        );
+        return;
+      }
       Map<String, dynamic> arguments = {"rideModel": mappedRide};
       Get.toNamed(AppRoutes.tripStatusScreen, arguments: arguments);
     } catch (e) {
@@ -434,6 +441,65 @@ class UserController extends GetxController {
         return;
       }
       status.value = "progress";
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> completeRide({required String rideId}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.completeRide(
+        token: token,
+        rideId: rideId,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      Get.toNamed(AppRoutes.bottomNavigationWidget);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  Future<void> rateTrip({
+    required String rating,
+    required String comment,
+    required String rideId,
+  }) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.rateTrip(
+        token: token,
+        rating: rating,
+        comment: comment,
+        rideId: rideId,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      CustomSnackbar.showSuccessToast(message);
+      Get.offAllNamed(AppRoutes.bottomNavigationWidget);
     } catch (e) {
       debugPrint(e.toString());
     } finally {

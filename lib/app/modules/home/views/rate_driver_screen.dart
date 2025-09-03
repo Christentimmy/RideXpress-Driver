@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ridexpressdriver/app/routes/app_routes.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
+import 'package:ridexpressdriver/app/data/models/ride_model.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 import 'package:ridexpressdriver/app/widgets/custom_button.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:ridexpressdriver/app/widgets/custom_textfield.dart';
 
 class RateDriverScreen extends StatelessWidget {
-  const RateDriverScreen({super.key});
+  final RideModel rideModel;
+  RateDriverScreen({super.key, required this.rideModel});
+
+  final userController = Get.find<UserController>();
+  final commentController = TextEditingController();
+  final RxDouble value = 3.0.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +37,10 @@ class RateDriverScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             _buildTripInfo(),
-            SizedBox(height: Get.height * 0.1),
+            SizedBox(height: Get.height * 0.03),
             Center(
               child: CircleAvatar(
                 radius: 53,
@@ -42,7 +49,9 @@ class RateDriverScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(2.0),
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: AssetImage("assets/images/ai.jpg"),
+                    backgroundImage: NetworkImage(
+                      rideModel.riderModel?.avatar ?? "",
+                    ),
                   ),
                 ),
               ),
@@ -50,7 +59,7 @@ class RateDriverScreen extends StatelessWidget {
             SizedBox(height: 15),
             Center(
               child: Text(
-                "Joshua Tobi",
+                "${rideModel.riderModel?.firstName} ${rideModel.riderModel?.lastName}",
                 textAlign: TextAlign.center,
                 style: Get.textTheme.bodyMedium!.copyWith(
                   fontSize: 20,
@@ -71,28 +80,54 @@ class RateDriverScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: Get.height * 0.04),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(5, (index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Icon(
-                    Icons.star,
-                    color: AppColors.primaryColor,
-                    size: 35,
-                  ),
-                );
-              }),
+            Center(
+              child: Obx(
+                () => RatingStars(
+                  value: value.value,
+                  onValueChanged: (v) {
+                    value.value = v;
+                  },
+                  starCount: 5,
+                  starSize: 30,
+                  maxValue: 5,
+                  starSpacing: 2,
+                  animationDuration: Duration(milliseconds: 1000),
+                  starOffColor: const Color(0xffe7e8ea),
+                  starColor: Colors.yellow,
+                  valueLabelVisibility: false,
+                ),
+              ),
             ),
             SizedBox(height: Get.height * 0.07),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: CustomTextField(
+                controller: commentController,
+                bgColor: Color(0xFFF8F8F8),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.primaryColor),
+                ),
+                minLines: 5,
+                maxLines: 6,
+                hintText: "Leave a review about your experience",
+              ),
+            ),
+
+            SizedBox(height: Get.height * 0.02),
             Center(
               child: CustomButton(
-                width: Get.width * 0.75 ,
+                width: Get.width * 0.75,
                 borderRadius: BorderRadius.circular(20),
-                ontap: () {
-                  Get.offAllNamed(AppRoutes.homeScreen);
+                ontap: () async {
+                  if (rideModel.id == null) return;
+                  userController.rateTrip(
+                    rating: value.value.toString(),
+                    comment: commentController.text,
+                    rideId: rideModel.id!,
+                  );
                 },
-                isLoading: false.obs,
+                isLoading: userController.isloading,
                 child: Text(
                   "Submit",
                   style: TextStyle(
@@ -109,7 +144,7 @@ class RateDriverScreen extends StatelessWidget {
     );
   }
 
-  Container _buildTripInfo() {
+  Widget _buildTripInfo() {
     return Container(
       width: Get.width,
       color: Color(0xFFFFF5DC),
@@ -121,19 +156,11 @@ class RateDriverScreen extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             leading: Icon(Icons.location_on, color: Colors.green),
             title: Text(
-              "Ikeja City Mall, Alausa Road, Ikeja",
+              rideModel.pickupLocation?.address ?? "",
               style: Get.textTheme.bodyMedium!.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
-              ),
-            ),
-            trailing: Text(
-              "2:21pm",
-              style: Get.textTheme.bodyMedium!.copyWith(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryColor,
               ),
             ),
           ),
@@ -142,19 +169,11 @@ class RateDriverScreen extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             leading: Icon(Icons.location_on, color: Colors.orange),
             title: Text(
-              "Shoprite Event Centre, Ikeja",
+              rideModel.dropOffLocation?.address ?? "",
               style: Get.textTheme.bodyMedium!.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
-              ),
-            ),
-            trailing: Text(
-              "1:21pm",
-              style: Get.textTheme.bodyMedium!.copyWith(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryColor,
               ),
             ),
           ),

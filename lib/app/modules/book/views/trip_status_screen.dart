@@ -115,7 +115,7 @@ class TripStatusScreen extends StatelessWidget {
       if (rideStatus.value == "accepted") return _buildRideAccepted();
       if (rideStatus.value == "arrived") return _buildRideArrived();
       if (rideStatus.value == "progress") return _builTripStarted();
-      if (rideStatus.value == "destinationReached") {
+      if (rideStatus.value == "completed") {
         return _buildDestinationReached();
       }
       return _buildEmptyRide();
@@ -186,62 +186,105 @@ class TripStatusScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "24 Min",
-                        style: GoogleFonts.manrope(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Text("KINGDOM TOWER"),
-                      SizedBox(height: 5),
-                      Text(
-                        "Alausa, Ikeja",
-                        style: GoogleFonts.manrope(
-                          color: Colors.black,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
+                CircleAvatar(
+                  radius: 25,
+                  backgroundImage: AssetImage("assets/images/ai.jpg"),
+                ),
+                SizedBox(width: 20),
+                Text(
+                  "${rideModel.riderModel?.firstName} ${rideModel.riderModel?.lastName}",
+                  style: GoogleFonts.manrope(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed(AppRoutes.chatScreen);
-                      },
-                      child: Icon(Icons.message),
-                    ),
-                    SizedBox(height: Get.height * 0.03),
-                    InkWell(
-                      onTap: () {
-                        _displayEmergencyBottomSheet();
-                      },
-                      child: Icon(
-                        FontAwesomeIcons.solidLightbulb,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
+                const Spacer(),
+                InkWell(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.chatScreen);
+                  },
+                  child: Icon(Icons.message),
                 ),
               ],
             ),
             SizedBox(height: 15),
+
+            Row(
+              children: [
+                Text(
+                  "Trip Route",
+                  style: Get.textTheme.bodyLarge?.copyWith(fontSize: 16),
+                ),
+                const Spacer(),
+                InkWell(
+                  onTap: () {
+                    _displayEmergencyBottomSheet();
+                  },
+                  child: Icon(
+                    FontAwesomeIcons.solidLightbulb,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: Get.height * 0.02),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Color(0xFF2FBF71),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.radio_button_checked,
+                  size: 16,
+                  color: Colors.white,
+                ),
+              ),
+              title: Text(
+                "Pickup Location",
+                style: Get.textTheme.bodyLarge?.copyWith(fontSize: 14),
+              ),
+              subtitle: Text(
+                rideModel.pickupLocation?.address ?? "",
+                style: Get.textTheme.bodySmall,
+              ),
+              trailing: Icon(
+                Icons.check_circle,
+                color: Color(0xFF2FBF71),
+                size: 20,
+              ),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.location_on, size: 16, color: Colors.white),
+              ),
+              title: Text(
+                "Destination",
+                style: Get.textTheme.bodyLarge?.copyWith(fontSize: 14),
+              ),
+              subtitle: Text(
+                rideModel.dropOffLocation?.address ?? "",
+                style: Get.textTheme.bodySmall,
+              ),
+            ),
+            SizedBox(height: Get.height * 0.03),
+
             CustomButton(
-              ontap: () {
-                rideModel.status!.value = "destinationReached";
+              ontap: () async {
+                if (rideModel.id == null) return;
+                await userController.completeRide(rideId: rideModel.id!);
               },
-              isLoading: false.obs,
+              isLoading: userController.isloading,
               height: 45,
               borderRadius: BorderRadius.circular(10),
               child: Text(

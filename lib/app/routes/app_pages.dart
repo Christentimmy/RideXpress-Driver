@@ -75,7 +75,14 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.homeScreen, page: () => HomeScreen()),
     GetPage(name: AppRoutes.chatScreen, page: () => ChatScreen()),
-    GetPage(name: AppRoutes.rateDriverScreen, page: () => RateDriverScreen()),
+    GetPage(
+      name: AppRoutes.rateDriverScreen,
+      page: () {
+        final arguments = Get.arguments;
+        final RideModel rideModel = arguments['rideModel'];
+        return RateDriverScreen(rideModel: rideModel);
+      },
+    ),
     GetPage(
       name: AppRoutes.bottomNavigationWidget,
       page: () => BottomNaviagtionWidget(),

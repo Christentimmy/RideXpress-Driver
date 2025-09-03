@@ -16,6 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.14.4
+  flutter_rating_stars: ^1.1.0
   flutter_secure_storage: ^9.2.4
   flutter_staggered_animations: ^1.1.1
   font_awesome_flutter: ^10.8.0
