@@ -475,4 +475,38 @@ class UserService {
     return null;
   }
 
+  Future<http.Response?> getRideHistory({
+    required String token,
+    required int page,
+    String? status,
+    String? timeRange,
+  }) async {
+    try {
+      Uri url = Uri.parse("$baseUrl/user/get-ride-history").replace(
+        queryParameters: {
+          "page": page.toString(),
+          if (status != null) "status": status,
+          if (timeRange != null) "timeRange": timeRange,
+        },
+      );
+
+      final response = await http
+          .get(
+            url,
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 60));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+    } on TimeoutException {
+      debugPrint("Request timeout");
+    } catch (e) {
+      debugPrint("❌ Error get ride history: $e");
+    }
+    return null;
+  }
 }

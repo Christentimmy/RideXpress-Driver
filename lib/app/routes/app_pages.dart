@@ -9,7 +9,7 @@ import 'package:ridexpressdriver/app/modules/auth/views/signup_screen.dart';
 import 'package:ridexpressdriver/app/modules/book/views/trip_status_screen.dart';
 import 'package:ridexpressdriver/app/modules/chat/view/chat_screen.dart';
 import 'package:ridexpressdriver/app/modules/home/views/home_screen.dart';
-import 'package:ridexpressdriver/app/modules/home/views/rate_driver_screen.dart';
+import 'package:ridexpressdriver/app/modules/book/views/rate_driver_screen.dart';
 import 'package:ridexpressdriver/app/modules/onboarding/views/onboarding_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/document_disclaimer_screen.dart';
 import 'package:ridexpressdriver/app/modules/profile/views/edit_profile_screen.dart';

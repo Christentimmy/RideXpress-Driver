@@ -29,9 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
       userController.getRideRequest();
       Get.find<LocationController>().initializeLocation();
     });
-    // Future.delayed(Duration(seconds: 10), () {
-    //   tripStatus.value = "rides";
-    // });
   }
 
   @override

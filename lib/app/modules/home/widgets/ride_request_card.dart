@@ -107,6 +107,7 @@ class RideRequestCard extends StatelessWidget {
               Obx(() {
                 return AnimatedCrossFade(
                   duration: Duration(milliseconds: 300),
+                  secondCurve: Curves.bounceOut,
                   firstChild: SizedBox.shrink(),
                   secondChild: Column(
                     children: [
@@ -182,7 +183,7 @@ class RideRequestCard extends StatelessWidget {
                     child: CustomButton(
                       height: 40,
                       borderRadius: BorderRadius.circular(20),
-                      isLoading: userController.isloading,
+                      isLoading: userController.isDeclineLoading,
                       ontap: () async {
                         if (rideRequest.id == null) return;
                         await userController.declineRide(

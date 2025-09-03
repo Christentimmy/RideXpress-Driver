@@ -13,6 +13,7 @@ import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
 
 class UserController extends GetxController {
   final isloading = false.obs;
+  final isDeclineLoading = false.obs;
   final rideRequestLoading = false.obs;
   Rxn<UserModel> userModel = Rxn<UserModel>();
   final _userService = UserService();
@@ -20,10 +21,11 @@ class UserController extends GetxController {
 
   //ride
   final isRequestloading = false.obs;
-  // final Rxn<RideModel> currentRide = Rxn<RideModel>(null);
-  // final RxString rideStatus = "".obs;
-
   final RxList<RideModel> rideHistory = <RideModel>[].obs;
+
+  //pagination
+  final RxInt currentPage = 1.obs;
+  final RxBool hasMorePage = false.obs;
 
   @override
   void onInit() {
@@ -349,7 +351,7 @@ class UserController extends GetxController {
   }
 
   Future<void> declineRide({required String rideId}) async {
-    isloading.value = true;
+    isDeclineLoading.value = true;
     try {
       final storageController = Get.find<StorageController>();
       String? token = await storageController.getToken();
@@ -367,10 +369,11 @@ class UserController extends GetxController {
         return;
       }
       CustomSnackbar.showSuccessToast(message);
+      rideRequestList.removeWhere((element) => element.id == rideId);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      isloading.value = false;
+      isDeclineLoading.value = false;
     }
   }
 
@@ -559,7 +562,51 @@ class UserController extends GetxController {
     }
   }
 
+  Future<void> getRideHistory({
+    bool showLoader = true,
+    bool isMore = false,
+    String? status,
+    String? timeRange,
+  }) async {
+    isloading.value = showLoader;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) {
+        Get.toNamed(AppRoutes.loginScreen);
+        return;
+      }
 
+      if (isMore) {
+        currentPage.value++;
+      }
+      if (status != null && status == "All") {
+        status = "";
+      }
+
+      final response = await _userService.getRideHistory(
+        token: token,
+        page: currentPage.value,
+        status: status?.toLowerCase(),
+        timeRange: timeRange?.toLowerCase(),
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      if (response.statusCode != 200) return;
+      List resData = decoded["data"] ?? [];
+      final hasMore = decoded["pagination"]?["hasMore"] ?? false;
+      hasMorePage.value = hasMore;
+      if (isMore) {
+        rideHistory.addAll(resData.map((e) => RideModel.fromJson(e)));
+      } else {
+        rideHistory.value = resData.map((e) => RideModel.fromJson(e)).toList();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
 
   void clean() {
     rideRequestList.value = [];
