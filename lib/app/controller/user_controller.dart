@@ -21,6 +21,8 @@ class UserController extends GetxController {
   final rideRequestList = <RideModel>[].obs;
 
   //ride
+  final totalRidesToday = 0.obs;
+  final totalRides = 0.obs;
   final isRequestloading = false.obs;
   final RxList<RideModel> rideHistory = <RideModel>[].obs;
 
@@ -649,6 +651,56 @@ class UserController extends GetxController {
       debugPrint(e.toString());
     } finally {
       isloading.value = false;
+    }
+  }
+
+  Future<void> getTodayRideSummary() async {
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) {
+        CustomSnackbar.showErrorToast("Authentication required");
+        return;
+      }
+
+      final response = await _userService.getTodayRideSummary(token: token);
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      String message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      final stats = decoded["data"];
+      if (stats == null) return;
+      totalRidesToday.value = stats["totalRides"];
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> getDriverRideStat() async {
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) {
+        CustomSnackbar.showErrorToast("Authentication required");
+        return;
+      }
+
+      final response = await _userService.getDriverRideStat(token: token);
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      String message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      final stats = decoded["data"];
+      if (stats == null) return;
+      totalRides.value = stats["allTripCounts"];
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 

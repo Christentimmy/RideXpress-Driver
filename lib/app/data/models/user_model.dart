@@ -1,4 +1,3 @@
-
 class UserModel {
   String? id;
   String? firstName;
@@ -17,6 +16,8 @@ class UserModel {
 
   LocationModel? location;
   DriverProfile? driverProfile;
+  DateTime? createdAt;
+  int? totalAvgRating;
 
   UserModel({
     this.id,
@@ -34,6 +35,8 @@ class UserModel {
     // this.address,
     this.location,
     this.driverProfile,
+    this.createdAt,
+    this.totalAvgRating,
   });
 
   factory UserModel.fromJson(json) {
@@ -61,6 +64,10 @@ class UserModel {
       driverProfile: json["driverProfile"] != null
           ? DriverProfile.fromJson(json["driverProfile"])
           : null,
+      createdAt: json["createdAt"] != null
+          ? DateTime.parse(json["createdAt"])
+          : DateTime.now(),
+      totalAvgRating: json["rating"] ?? 0,
     );
   }
 
@@ -146,9 +153,9 @@ class DriverProfile {
     );
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {};
-    if(carSeat != null){
+    if (carSeat != null) {
       data["seat"] = carSeat;
     }
     if (vehicleRegNumber != null && vehicleRegNumber!.isNotEmpty) {
@@ -166,7 +173,7 @@ class DriverProfile {
     if (vehicleYear != null && vehicleYear!.isNotEmpty) {
       data["vehicleYear"] = vehicleYear;
     }
-    
+
     return data;
   }
 }

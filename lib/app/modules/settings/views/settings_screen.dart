@@ -2,11 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ridexpressdriver/app/controller/auth_controller.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  final userController = Get.find<UserController>();
+
+  @override
+  void initState() { 
+    super.initState();
+    userController.getDriverRideStat();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,10 +137,9 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            top: Get.height * 0.12,
-            left: Get.width * 0.365,
+          Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   padding: EdgeInsets.all(2),
@@ -134,14 +147,18 @@ class SettingsScreen extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.grey),
                   ),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.white,
-                    backgroundImage: AssetImage("assets/images/ai.jpg"),
+                  child: Obx(
+                    () => CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.white,
+                      backgroundImage: NetworkImage(
+                        userController.userModel.value?.avatar ?? "",
+                      ),
+                    ),
                   ),
                 ),
                 Text(
-                  "John Doe",
+                  "${userController.userModel.value?.firstName} ${userController.userModel.value?.lastName}",
                   style: GoogleFonts.manrope(
                     fontSize: 20,
                     color: AppColors.primaryColor,
@@ -186,12 +203,14 @@ class SettingsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          "3,251",
-                          style: GoogleFonts.manrope(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primaryColor,
+                        Obx(
+                          () => Text(
+                            userController.totalRides.value.toString(),
+                            style: GoogleFonts.manrope(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryColor,
+                            ),
                           ),
                         ),
                         Row(
@@ -225,14 +244,18 @@ class SettingsScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "4.99",
-                              style: GoogleFonts.manrope(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primaryColor,
-                              ),
-                            ),
+                            Obx(() {
+                              final userModel = userController.userModel;
+                              final total = userModel.value?.totalAvgRating;
+                              return Text(
+                                total.toString(),
+                                style: GoogleFonts.manrope(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primaryColor,
+                                ),
+                              );
+                            }),
                             Icon(
                               Icons.star,
                               size: 22,
@@ -265,7 +288,7 @@ class SettingsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "2",
+                        monthsAgo(userController.userModel.value?.createdAt),
                         style: GoogleFonts.manrope(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -290,6 +313,17 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  String monthsAgo(DateTime? date) {
+    if (date == null) return "";
+    final now = DateTime.now();
+    final differenceInMonths =
+        (now.year - date.year) * 12 + now.month - date.month;
+
+    if (differenceInMonths <= 0) return "0";
+    if (differenceInMonths == 1) return "1";
+    return "$differenceInMonths";
+  }
+
   Widget _buildBg() {
     return SizedBox(
       height: Get.height * 0.37,
@@ -304,7 +338,7 @@ class SettingsScreen extends StatelessWidget {
               color: Color(0xFFFFEBB6),
             ),
           ),
-          Image.asset("assets/images/newMask.png"),
+          Image.asset("assets/images/newMask.png", fit: BoxFit.cover),
         ],
       ),
     );

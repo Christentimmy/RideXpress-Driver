@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ridexpressdriver/app/controller/location_controller.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/modules/home/widgets/online_switch_widget.dart';
 import 'package:ridexpressdriver/app/modules/home/widgets/ride_request_card.dart';
@@ -27,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       userController.getRideRequest();
-      Get.find<LocationController>().initializeLocation();
+      userController.getTodayRideSummary();
     });
   }
 
@@ -188,12 +187,14 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 FaIcon(FontAwesomeIcons.car, color: AppColors.primaryColor),
                 SizedBox(width: 10),
-                Text(
-                  "9 Trips",
-                  style: GoogleFonts.manrope(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primaryColor,
+                Obx(
+                  () => Text(
+                    "${userController.totalRidesToday.value} Trips",
+                    style: GoogleFonts.manrope(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primaryColor,
+                    ),
                   ),
                 ),
               ],
@@ -203,5 +204,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 }

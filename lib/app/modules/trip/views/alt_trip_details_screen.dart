@@ -180,7 +180,7 @@ class _AltTripDetailsScreenState extends State<AltTripDetailsScreen> {
     );
   }
 
-  Column _buildHelpTile({required String title}) {
+  Column buildHelpTile({required String title}) {
     return Column(
       children: [
         ListTile(
@@ -251,14 +251,23 @@ class _AltTripDetailsScreenState extends State<AltTripDetailsScreen> {
       color: Colors.grey.shade300.withValues(alpha: 0.5),
       alignment: Alignment.center,
       child: Text(
-        "Ride Completed",
+        "Ride ${widget.rideModel.status?.value}",
         style: GoogleFonts.manrope(
-          color: Colors.green,
+          color: getStatusColor(widget.rideModel.status?.value),
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
+  }
+
+  Color? getStatusColor(String? status) {
+    if (status == null) return null;
+    if (status == "completed") return const Color(0xFF4CAF50);
+    if (status == "cancelled") return const Color(0xFF9E9E9E);
+    if (status == "pending") return const Color(0xFFFF7F50);
+    if (status == "accepted") return const Color(0xFFFF7F50);
+    return null;
   }
 
   AppBar _buildAppBar() {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/controller/location_controller.dart';
 import 'package:ridexpressdriver/app/controller/storage_controller.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/data/models/message_model.dart';
@@ -36,13 +37,15 @@ class SocketController extends GetxController with WidgetsBindingObserver {
     socket?.onConnect((_) {
       print("Socket connected successfully");
       listenToEvents();
+      final locationController = Get.find<LocationController>();
+      locationController.startLocationUpdates();
     });
 
     socket?.onDisconnect((_) {
       print("Socket disconnected");
       scheduleReconnect();
       if (_reconnectAttempts >= _maxReconnectAttempts) {
-        // disConnectListeners();
+        disConnectListeners();
       }
     });
 
@@ -112,4 +115,24 @@ class SocketController extends GetxController with WidgetsBindingObserver {
       socket?.connect();
     });
   }
+
+  void updateLocation({
+    required String latitude,
+    required String longitude,
+    required String address,
+  }) {
+    if (socket != null && socket!.connected) {
+      socket?.emit("updateLocation", {
+        "lat": latitude,
+        "lng": longitude,
+        "address": address,
+      });
+    }
+  }
+
+  void disConnectListeners() {
+    socket?.off("ride-request");
+    socket?.off("receiveMessage");
+  }
+
 }

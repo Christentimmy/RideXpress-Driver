@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/controller/socket_controller.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
-// import 'package:sim/controller/socket_controller.dart';
 
 class LocationController extends GetxController {
   Position? lastPosition;
@@ -12,13 +12,8 @@ class LocationController extends GetxController {
   final _userController = Get.find<UserController>();
 
   final isloading = false.obs;
-  // final socketController = Get.find<SocketController>();
+  final socketController = Get.find<SocketController>();
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   initializeLocation();
-  // }
 
   Future<void> initializeLocation() async {
     isloading.value = true;
@@ -58,31 +53,35 @@ class LocationController extends GetxController {
   }
 
   void startLocationUpdates() {
-    // if (socketController.socket == null ||
-    //     !socketController.socket!.connected) {
-    //   print("Socket is not connected. Not starting location updates.");
-    //   return;
-    // }
+    if (socketController.socket == null ||
+        !socketController.socket!.connected) {
+      return;
+    }
 
-    // Geolocator.getPositionStream(
-    //   locationSettings: LocationSettings(
-    //     accuracy: LocationAccuracy.high,
-    //     distanceFilter: distanceThreshold,
-    //   ),
-    // ).listen((Position position) {
-    //   updateDriverLocation(position);
-    // });
+    Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: distanceThreshold,
+      ),
+    ).listen((Position position) {
+      updateDriverLocation(position);
+    });
   }
 
-  void updateDriverLocation(Position position) {
-    //   if (socketController.socket != null && socketController.socket!.connected) {
-    //     socketController.updateDriverLocation(
-    //       lat: position.latitude,
-    //       lng: position.longitude,
-    //     );
-    //   } else {
-    //     print("Socket disconnected, cannot send location updates.");
-    //   }
+  void updateDriverLocation(Position position) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+    if (socketController.socket != null && socketController.socket!.connected) {
+      socketController.updateLocation(
+        latitude: position.latitude.toString(),
+        longitude: position.longitude.toString(),
+        address: placemarks.first.subAdministrativeArea ?? "",
+      );
+    } else {
+      print("Socket disconnected, cannot send location updates.");
+    }
   }
 
   Future<LocationModel?> useMyCurrentLocation() async {

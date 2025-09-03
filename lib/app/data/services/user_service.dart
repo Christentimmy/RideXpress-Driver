@@ -540,4 +540,55 @@ class UserService {
       throw Exception("Unexpected error $e");
     }
   }
+
+  Future<http.Response?> getTodayRideSummary({required String token}) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse("$baseUrl/user/get-today-ride-summary"),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 60));
+      return response;
+    } on SocketException catch (e) {
+      CustomSnackbar.showErrorToast("Check internet connection");
+      debugPrint("No internet connection $e");
+      return null;
+    } on TimeoutException {
+      CustomSnackbar.showErrorToast(
+        "Request timeout, probably bad network, try again",
+      );
+      debugPrint("Request timeout");
+      return null;
+    } catch (e) {
+      throw Exception("Unexpected error $e");
+    }
+  }
+
+  Future<http.Response?> getDriverRideStat({required String token}) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse("$baseUrl/user/get-driver-ride-stat"),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 60));
+      return response;
+    } on SocketException catch (e) {
+      debugPrint("No internet connection $e");
+      return null;
+    } on TimeoutException {
+      debugPrint("Request timeout");
+      return null;
+    } catch (e) {
+      throw Exception("Unexpected error $e");
+    }
+  }
+
 }
