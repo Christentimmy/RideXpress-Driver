@@ -124,10 +124,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundImage: AssetImage("assets/images/ai.jpg"),
-          ),
+          Obx(() {
+            final userModel = userController.userModel.value;
+            return CircleAvatar(
+              radius: 20,
+              backgroundImage: NetworkImage(userModel?.avatar ?? ""),
+            );
+          }),
           Spacer(),
           AnimatedSwitchWidget(),
           Spacer(),
