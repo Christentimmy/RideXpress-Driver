@@ -142,11 +142,11 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              "Hello, how can I help you?",
+             message.message ?? "",
               style: GoogleFonts.inter(color: Colors.black, fontSize: 14),
             ),
             Text(
-              "12:15",
+              DateFormat("hh:mm a").format(message.createdAt ?? DateTime.now()),
               style: GoogleFonts.inter(color: Colors.white, fontSize: 10),
             ),
           ],
