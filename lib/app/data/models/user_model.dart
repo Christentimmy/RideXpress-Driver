@@ -1,3 +1,5 @@
+
+
 class UserModel {
   String? id;
   String? firstName;
@@ -17,7 +19,7 @@ class UserModel {
   LocationModel? location;
   DriverProfile? driverProfile;
   DateTime? createdAt;
-  int? totalAvgRating;
+  double? totalAvgRating;
 
   UserModel({
     this.id,
@@ -53,11 +55,6 @@ class UserModel {
       isEmailVerified: json["isEmailVerified"] ?? false,
       isPhoneVerified: json["isPhoneVerified"] ?? false,
       avatar: json["avatar"] ?? "",
-      // address: json["address"] != null
-      //     ? List<AddressModel>.from(
-      //         json["address"].map((x) => AddressModel.fromJson(x)),
-      //       )
-      //     : null,
       location: json["location"] != null
           ? LocationModel.fromJson(json["location"])
           : null,
@@ -67,7 +64,7 @@ class UserModel {
       createdAt: json["createdAt"] != null
           ? DateTime.parse(json["createdAt"])
           : DateTime.now(),
-      totalAvgRating: json["rating"] ?? 0,
+      totalAvgRating: (json["rating"] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -187,8 +184,8 @@ class LocationModel {
 
   factory LocationModel.fromJson(json) {
     return LocationModel(
-      lat: json["lat"] ?? 0,
-      lng: json["lng"] ?? 0,
+      lat: double.tryParse(json["lat"].toString()) ?? 0.0,
+      lng: double.tryParse(json["lng"].toString()) ?? 0.0,
       address: json["address"] ?? "",
     );
   }

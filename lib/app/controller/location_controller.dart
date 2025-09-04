@@ -14,7 +14,6 @@ class LocationController extends GetxController {
   final isloading = false.obs;
   final socketController = Get.find<SocketController>();
 
-
   Future<void> initializeLocation() async {
     isloading.value = true;
     LocationPermission permission = await Geolocator.checkPermission();
@@ -52,7 +51,9 @@ class LocationController extends GetxController {
     }
   }
 
-  void startLocationUpdates() {
+  void startLocationUpdates() async {
+    await initializeLocation();
+
     if (socketController.socket == null ||
         !socketController.socket!.connected) {
       return;

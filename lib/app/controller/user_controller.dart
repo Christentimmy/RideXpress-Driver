@@ -13,6 +13,7 @@ import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
 
 class UserController extends GetxController {
+  
   final isloading = false.obs;
   final isAcceptLoading = false.obs;
   final isDeclineLoading = false.obs;
@@ -61,9 +62,10 @@ class UserController extends GetxController {
         return;
       }
 
-      final user = decoded["data"] ?? [];
+      final user = decoded["data"];
       if (user == null) return;
       final mappedUser = UserModel.fromJson(user);
+
       userModel.value = mappedUser;
     } catch (e) {
       debugPrint(e.toString());
@@ -182,6 +184,7 @@ class UserController extends GetxController {
         CustomSnackbar.showErrorToast(message);
         return;
       }
+      await getUserDetails();
       Get.offAllNamed(AppRoutes.bottomNavigationWidget);
     } catch (e) {
       debugPrint(e.toString());
@@ -216,7 +219,6 @@ class UserController extends GetxController {
       final storageController = Get.find<StorageController>();
       String? token = await storageController.getToken();
       if (token == null || token.isEmpty) {
-        CustomSnackbar.showErrorToast("Authentication required");
         Get.toNamed(AppRoutes.loginScreen);
         return true;
       }
