@@ -7,6 +7,7 @@ import 'package:ridexpressdriver/app/modules/auth/views/login_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/phone_authentication_screen.dart';
 import 'package:ridexpressdriver/app/modules/auth/views/signup_screen.dart';
 import 'package:ridexpressdriver/app/modules/book/views/trip_status_screen.dart';
+import 'package:ridexpressdriver/app/modules/call/call_screen.dart';
 import 'package:ridexpressdriver/app/modules/chat/view/chat_screen.dart';
 import 'package:ridexpressdriver/app/modules/home/views/home_screen.dart';
 import 'package:ridexpressdriver/app/modules/book/views/rate_driver_screen.dart';
@@ -127,5 +128,13 @@ class AppPages {
         return TripStatusScreen(rideModel: rideModel);
       },
     ),
+    GetPage(name: AppRoutes.callScreen, page: (){
+      final arguments = Get.arguments;
+      final tripId = arguments["tripId"];
+      if (tripId == null) {
+        throw Exception("TripId required");
+      }
+      return CallScreen(callID: tripId);
+    }),
   ];
 }

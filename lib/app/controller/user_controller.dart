@@ -774,6 +774,40 @@ class UserController extends GetxController {
     }
   }
 
+  Future<void> saveOneSignalId({
+    required String oneSignalId,
+    VoidCallback? whatNext,
+  }) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _userService.saveUserOneSignalId(
+        token: token,
+        id: oneSignalId,
+      );
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      final userId = userModel.value?.id;
+
+      await storageController.saveLastPushId(
+        userId: userId ?? "",
+        oneSignalId: oneSignalId,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
   void clean() {
     rideRequestList.value = [];
     rideRequestLoading.value = false;
@@ -799,4 +833,7 @@ class UserController extends GetxController {
     acceptanceRatePercentage.value = 0;
     cancellationRatePercentage.value = 0;
   }
+
+
+
 }
