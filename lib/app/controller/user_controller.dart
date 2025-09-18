@@ -295,6 +295,7 @@ class UserController extends GetxController {
         CustomSnackbar.showErrorToast(message);
         return;
       }
+      rideRequestList.clear();
       List rideRequest = decoded["data"] ?? [];
       if (rideRequest.isEmpty) return;
 
@@ -451,6 +452,7 @@ class UserController extends GetxController {
       }
       print("Ride current status: ${ride["status"]}");
       final mappedRide = RideModel.fromJson(ride);
+      print(mappedRide.id);
       if (mappedRide.status?.value == "completed") {
         Get.toNamed(
           AppRoutes.rateDriverScreen,
@@ -705,10 +707,11 @@ class UserController extends GetxController {
         return;
       }
       final stats = decoded["data"];
+      print(stats);
       if (stats == null) return;
       totalRides.value = stats["allTripCounts"];
-      acceptanceRatePercentage.value = stats["acceptanceRatePercentage"];
-      cancellationRatePercentage.value = stats["cancellationRatePercentage"];
+      acceptanceRatePercentage.value = int.tryParse(stats["acceptanceRatePercentage"]) ?? 0;
+      cancellationRatePercentage.value = int.tryParse(stats["cancellationRatePercentage"]) ?? 0;
     } catch (e) {
       debugPrint(e.toString());
     }

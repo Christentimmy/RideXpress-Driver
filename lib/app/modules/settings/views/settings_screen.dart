@@ -17,9 +17,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final userController = Get.find<UserController>();
 
   @override
-  void initState() { 
-    super.initState();
+  void initState() {
     userController.getDriverRideStat();
+    super.initState();
   }
 
   @override
@@ -247,6 +247,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Obx(() {
                               final userModel = userController.userModel;
                               final total = userModel.value?.totalAvgRating;
+                              // print(total);
                               return Text(
                                 total.toString(),
                                 style: GoogleFonts.manrope(
