@@ -4,7 +4,7 @@ import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class CallScreen extends StatelessWidget {
-  final String callID; // unique per trip (like tripId)
+  final String callID; 
 
   CallScreen({super.key, required this.callID});
 
@@ -13,8 +13,8 @@ class CallScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ZegoUIKitPrebuiltCall(
-      appID: 0, // from ZEGOCLOUD console
-      appSign: "", // from ZEGOCLOUD console
+      appID: 1008736088, 
+      appSign: "f3951f9c7db8d9198995aeb8d8b3d2e12ea30a43e0b8474b9dcc690db34c61ce",
       userID: userController.userModel.value?.id ?? "",
       userName: userController.userModel.value?.firstName ?? "",
       callID: callID,

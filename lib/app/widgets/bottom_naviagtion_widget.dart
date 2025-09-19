@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ridexpressdriver/app/controller/notification_controller.dart';
 import 'package:ridexpressdriver/app/controller/socket_controller.dart';
 import 'package:ridexpressdriver/app/modules/home/views/home_screen.dart';
 import 'package:ridexpressdriver/app/modules/settings/views/settings_screen.dart';
@@ -15,6 +16,7 @@ class BottomNaviagtionWidget extends StatefulWidget {
 
 class _BottomNaviagtionWidgetState extends State<BottomNaviagtionWidget> {
   final RxInt currentIndex = 0.obs;
+  final notificationController = Get.find<NotificationController>();
 
   final List<Widget> pages = [
     HomeScreen(),
@@ -29,6 +31,7 @@ class _BottomNaviagtionWidgetState extends State<BottomNaviagtionWidget> {
     if (socketController.socket == null || !socketController.socket!.connected) {
       socketController.initializeSocket();
     }
+    notificationController.saveUserOneSignalId();
   }
 
   @override

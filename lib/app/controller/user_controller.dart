@@ -13,7 +13,6 @@ import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/widgets/snack_bar.dart';
 
 class UserController extends GetxController {
-  
   final isloading = false.obs;
   final isAcceptLoading = false.obs;
   final isDeclineLoading = false.obs;
@@ -710,8 +709,10 @@ class UserController extends GetxController {
       print(stats);
       if (stats == null) return;
       totalRides.value = stats["allTripCounts"];
-      acceptanceRatePercentage.value = int.tryParse(stats["acceptanceRatePercentage"]) ?? 0;
-      cancellationRatePercentage.value = int.tryParse(stats["cancellationRatePercentage"]) ?? 0;
+      acceptanceRatePercentage.value =
+          int.tryParse(stats["acceptanceRatePercentage"]) ?? 0;
+      cancellationRatePercentage.value =
+          int.tryParse(stats["cancellationRatePercentage"]) ?? 0;
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -749,6 +750,7 @@ class UserController extends GetxController {
   }
 
   Future<void> getAllRatings() async {
+    isloading.value = true;
     try {
       final storageController = Get.find<StorageController>();
       String? token = await storageController.getToken();
@@ -765,12 +767,14 @@ class UserController extends GetxController {
         CustomSnackbar.showErrorToast(message);
         return;
       }
-      final ratings = decoded["data"];
-      if (ratings == null) return;
-      List mapped = ratings.map((json) => RatingModel.fromJson(json)).toList();
+      List dataRating = decoded["data"];
+      if (dataRating.isEmpty) return;
+      final mapped = dataRating.map((json) => RatingModel.fromJson(json)).toList();
       ratings.value = mapped;
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
     }
   }
 
@@ -808,6 +812,32 @@ class UserController extends GetxController {
     }
   }
 
+  Future<void> call({required String tripId}) async {
+    isloading.value = true;
+    try {
+      final storageController = Get.find<StorageController>();
+      String? token = await storageController.getToken();
+      if (token == null || token.isEmpty) {
+        CustomSnackbar.showErrorToast("Authentication required");
+        return;
+      }
+
+      final response = await _userService.call(token: token, tripId: tripId);
+      if (response == null) return;
+      final decoded = json.decode(response.body);
+      final message = decoded["message"] ?? "";
+      if (response.statusCode != 200) {
+        CustomSnackbar.showErrorToast(message);
+        return;
+      }
+      Get.toNamed(AppRoutes.callScreen, arguments: {"tripId": tripId});
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      isloading.value = false;
+    }
+  }
+
   void clean() {
     rideRequestList.value = [];
     rideRequestLoading.value = false;
@@ -833,7 +863,4 @@ class UserController extends GetxController {
     acceptanceRatePercentage.value = 0;
     cancellationRatePercentage.value = 0;
   }
-
-
-
 }

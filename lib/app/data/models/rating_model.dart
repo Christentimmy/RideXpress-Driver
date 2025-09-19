@@ -1,7 +1,7 @@
 import 'package:ridexpressdriver/app/data/models/user_model.dart';
 
 class RatingModel {
-  final int? id;
+  final String? id;
   final UserModel? rider;
   final UserModel? driver;
 
@@ -26,14 +26,14 @@ class RatingModel {
 
   factory RatingModel.fromJson(Map<String, dynamic> json) {
     return RatingModel(
-      id: json["id"] ?? 0,
+      id: json["id"] ?? "",
       rider: json["rider"] != null ? UserModel.fromJson(json["rider"]) : null,
       driver: json["driver"] != null
           ? UserModel.fromJson(json["driver"])
           : null,
-      riderRating: json["riderRating"] ?? 0,
+      riderRating: double.tryParse(json["riderRating"].toString()) ?? 0.0,
       riderComment: json["riderComment"] ?? "",
-      driverRating: json["driverRating"] ?? 0,
+      driverRating: double.tryParse(json["driverRating"].toString()) ?? 0.0,
       driverComment: json["driverComment"] ?? "",
       createdAt: json["createdAt"] != null
           ? DateTime.parse(json["createdAt"])

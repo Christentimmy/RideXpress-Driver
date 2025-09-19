@@ -9,12 +9,12 @@ class NotificationController extends GetxController {
   void onInit() {
     super.onInit();
     initOneSignal();
-    saveUserOneSignalId();
+    // saveUserOneSignalId();
 
-    OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+    OneSignal.Notifications.addClickListener((event) {
       final notification = event.notification;
       final data = notification.additionalData;
-      final actionId = notification.buttons?[0].id;
+      final actionId = event.result.actionId;
 
       if (data?['type'] == 'call') {
         final tripId = data?["tripId"];
@@ -27,12 +27,16 @@ class NotificationController extends GetxController {
 
   Future<void> initOneSignal() async {
     OneSignal.initialize("2fa250e8-3569-45a5-9c27-db2be9b84c36");
+    if (OneSignal.Notifications.permission == false) {
+      await OneSignal.Notifications.requestPermission(true);
+    }
   }
 
   Future<void> saveUserOneSignalId() async {
     final userController = Get.find<UserController>();
     final userId = userController.userModel.value?.id;
     final subId = OneSignal.User.pushSubscription.id;
+
     final storageController = Get.find<StorageController>();
 
     if (userId == null || subId == null) return;

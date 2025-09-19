@@ -5,23 +5,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
-class RatingStatScreen extends StatelessWidget {
-  RatingStatScreen({super.key});
+class RatingStatScreen extends StatefulWidget {
+  const RatingStatScreen({super.key});
 
-  final UserController _userController = Get.find<UserController>();
+  @override
+  State<RatingStatScreen> createState() => _RatingStatScreenState();
+}
+
+class _RatingStatScreenState extends State<RatingStatScreen> {
+  final _userController = Get.find<UserController>();
+
+  @override
+  void initState() {
+    _userController.getAllRatings();
+    super.initState();
+  }
 
   // Calculate average rating
-  double _calculateAverageRating() {
-    if (_userController.ratings.isEmpty) return 0.0;
+  // double _calculateAverageRating() {
+  //   if (_userController.ratings.isEmpty) return 0.0;
 
-    double total = 0;
-    for (var rating in _userController.ratings) {
-      if (rating.riderRating != null) {
-        total += rating.riderRating!;
-      }
-    }
-    return total / _userController.ratings.length;
-  }
+  //   double total = 0;
+  //   for (var rating in _userController.ratings) {
+  //     if (rating.riderRating != null) {
+  //       total += rating.riderRating!;
+  //     }
+  //   }
+  //   return total / _userController.ratings.length;
+  // }
 
   // Calculate rating distribution
   Map<int, int> _calculateRatingDistribution() {
@@ -80,13 +91,24 @@ class RatingStatScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        _calculateAverageRating().toStringAsFixed(2),
-                        style: GoogleFonts.manrope(
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Obx(() {
+                        final userModel = _userController.userModel.value;
+                        if (userModel == null) return const SizedBox.shrink();
+                        // return Text(
+                        //   _calculateAverageRating().toStringAsFixed(2),
+                        //   style: GoogleFonts.manrope(
+                        //     fontSize: 35,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // );
+                        return Text(
+                          userModel.totalAvgRating?.toStringAsFixed(2) ?? "",
+                          style: GoogleFonts.manrope(
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }),
                       SizedBox(width: 5),
                       Icon(
                         FontAwesomeIcons.solidStar,
@@ -107,6 +129,13 @@ class RatingStatScreen extends StatelessWidget {
             ),
             SizedBox(height: Get.height * 0.03),
             Obx(() {
+              if (_userController.isloading.value) {
+                return SizedBox(
+                  height: Get.height * 0.34,
+                  width: Get.width,
+                  child: const Center(child: CircularProgressIndicator()),
+                );
+              }
               if (_userController.ratings.isEmpty) {
                 return SizedBox(
                   height: Get.height * 0.34,
