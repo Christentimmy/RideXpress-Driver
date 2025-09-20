@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -126,9 +126,15 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Obx(() {
             final userModel = userController.userModel.value;
+            if (userModel == null) {
+              return CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.transparent,
+              );
+            }
             return CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(userModel?.avatar ?? ""),
+              backgroundImage: NetworkImage(userModel.avatar!),
             );
           }),
           Spacer(),

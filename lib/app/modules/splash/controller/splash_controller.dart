@@ -45,6 +45,7 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
         return;
       }
       final userController = Get.find<UserController>();
+      await userController.getUserDetails();
       bool hasNaviagted = await userController.getUserStatus();
       if (hasNaviagted) return;
       await Get.find<SocketController>().initializeSocket();

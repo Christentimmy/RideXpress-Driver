@@ -20,5 +20,6 @@ class CallScreen extends StatelessWidget {
       callID: callID,
       config: ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall(),
     );
+    // return SizedBox.shrink();
   }
 }

@@ -25,7 +25,7 @@ class SocketController extends GetxController with WidgetsBindingObserver {
       return;
     }
 
-    socket = io.io("https://aa24a56caade.ngrok-free.app", <String, dynamic>{
+    socket = io.io("https://ridexpress-backend.onrender.com", <String, dynamic>{
       'transports': ['websocket'],
       'extraHeaders': {'Authorization': 'Bearer $token'},
       'reconnection': true,

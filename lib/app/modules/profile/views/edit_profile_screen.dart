@@ -21,6 +21,10 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    firstNameController.text = userController.userModel.value?.firstName ?? "";
+    lastNameController.text = userController.userModel.value?.lastName ?? "";
+    emailController.text = userController.userModel.value?.email ?? "";
+    phoneNumberController.text = userController.userModel.value?.phone ?? "";
     return Scaffold(
       appBar: AppBar(title: Text("Edit Profile")),
       body: SafeArea(

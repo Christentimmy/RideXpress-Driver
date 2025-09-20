@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ridexpressdriver/app/controller/user_controller.dart';
 import 'package:ridexpressdriver/app/data/models/rating_model.dart';
-import 'package:ridexpressdriver/app/routes/app_routes.dart';
+// import 'package:ridexpressdriver/app/routes/app_routes.dart';
 import 'package:ridexpressdriver/app/utils/colors.dart';
 
 class TripsStatsScreen extends StatefulWidget {
@@ -19,9 +19,8 @@ class _TripsStatsScreenState extends State<TripsStatsScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (userController.ratings.isEmpty) {
-        userController.getAllRatings();
-      }
+      userController.getAllRatings();
+      userController.getDriverRideStat();
     });
     super.initState();
   }
@@ -196,7 +195,7 @@ class _TripsStatsScreenState extends State<TripsStatsScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Get.toNamed(AppRoutes.acceptanceScreen);
+                      // Get.toNamed(AppRoutes.acceptanceScreen);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -236,7 +235,7 @@ class _TripsStatsScreenState extends State<TripsStatsScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      Get.toNamed(AppRoutes.cancellationRateScreen);
+                      // Get.toNamed(AppRoutes.cancellationRateScreen);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

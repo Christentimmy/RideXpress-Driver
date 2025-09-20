@@ -1,10 +1,11 @@
-
-
 import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class StorageController extends GetxController {
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  // final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
 
   // Store token
   Future<void> storeToken(String token) async {
@@ -13,7 +14,13 @@ class StorageController extends GetxController {
 
   // Get token
   Future<String?> getToken() async {
-    return await _secureStorage.read(key: 'userToken');
+    try {
+      return await _secureStorage.read(key: 'userToken');
+    } catch (e) {
+      // If decryption fails, clear all data and return null
+      await _secureStorage.deleteAll();
+      return null;
+    }
   }
 
   // Delete token
@@ -23,8 +30,13 @@ class StorageController extends GetxController {
 
   //user status
   Future<bool> getUserStatus() async {
-    final String? value = await _secureStorage.read(key: "newUser");
-    return value != null ? true : false;
+    try {
+      final String? value = await _secureStorage.read(key: "newUser");
+      return value != null ? true : false;
+    } catch (e) {
+      await _secureStorage.deleteAll();
+      return false;
+    }
   }
 
   Future<void> saveStatus(String value) async {

@@ -706,13 +706,12 @@ class UserController extends GetxController {
         return;
       }
       final stats = decoded["data"];
-      print(stats);
       if (stats == null) return;
       totalRides.value = stats["allTripCounts"];
       acceptanceRatePercentage.value =
-          int.tryParse(stats["acceptanceRatePercentage"]) ?? 0;
+          int.tryParse(stats["acceptanceRatePercentage"].toString()) ?? 0;
       cancellationRatePercentage.value =
-          int.tryParse(stats["cancellationRatePercentage"]) ?? 0;
+          int.tryParse(stats["cancellationRatePercentage"].toString()) ?? 0;
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -769,7 +768,9 @@ class UserController extends GetxController {
       }
       List dataRating = decoded["data"];
       if (dataRating.isEmpty) return;
-      final mapped = dataRating.map((json) => RatingModel.fromJson(json)).toList();
+      final mapped = dataRating
+          .map((json) => RatingModel.fromJson(json))
+          .toList();
       ratings.value = mapped;
     } catch (e) {
       debugPrint(e.toString());
@@ -843,10 +844,7 @@ class UserController extends GetxController {
     rideRequestLoading.value = false;
     isloading.value = false;
     userModel.value = null;
-    totalRides.value = 0;
     totalRidesToday.value = 0;
-    acceptanceRatePercentage.value = 0;
-    cancellationRatePercentage.value = 0;
     isRequestloading.value = false;
     rideHistory.value = [];
     currentPage.value = 1;

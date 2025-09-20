@@ -2,9 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ridexpressdriver/app/controller/user_controller.dart';
 
-class CancellationRateScreen extends StatelessWidget {
+class CancellationRateScreen extends StatefulWidget {
   const CancellationRateScreen({super.key});
+
+  @override
+  State<CancellationRateScreen> createState() => _CancellationRateScreenState();
+}
+
+class _CancellationRateScreenState extends State<CancellationRateScreen> {
+  final userController = Get.find<UserController>();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      userController.getDriverRideStat();
+      userController.getAllRatings();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +43,17 @@ class CancellationRateScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Obx(() {
+                    return Text(
+                      "${userController.cancellationRatePercentage.value}%",
+                      style: GoogleFonts.manrope(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }),
                   Text(
-                    "2%",
-                    style: GoogleFonts.manrope(
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    "Dec 3 - Jan 2",
+                    "This Year",
                     style: GoogleFonts.manrope(
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
@@ -56,13 +75,15 @@ class CancellationRateScreen extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  Text(
-                    "43",
-                    style: GoogleFonts.manrope(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Obx(() {
+                    return Text(
+                      "${userController.totalRides.value}",
+                      style: GoogleFonts.manrope(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -79,11 +100,13 @@ class CancellationRateScreen extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              trailing: Text(
-                "43",
-                style: GoogleFonts.manrope(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
+              trailing: Obx(
+                () => Text(
+                  "${userController.acceptanceRatePercentage.value}",
+                  style: GoogleFonts.manrope(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
@@ -103,11 +126,13 @@ class CancellationRateScreen extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              trailing: Text(
-                "43",
-                style: GoogleFonts.manrope(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
+              trailing: Obx(
+                () => Text(
+                  "${userController.cancellationRatePercentage.value}",
+                  style: GoogleFonts.manrope(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
